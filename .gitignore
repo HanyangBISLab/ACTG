@@ -1,5 +1,13 @@
 *.class
 
+# Source File
+.fa
+.txt
+.gtf
+.gff
+.vcf
+data*
+
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
