@@ -38,7 +38,7 @@ public class Flat {
 	
 	public static void write(StartPos startPos, int textPos, boolean strand, int trans_cnt, String valText, ArrayList<Transcript> transcriptList, String geneID) throws IOException {
 		
-		
+		theBestMappingType = UNKNOWN;
 		geneID_ = geneID;
 		
 		// 최초 1회 파일을 생성함
