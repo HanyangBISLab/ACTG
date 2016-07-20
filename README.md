@@ -1,12 +1,12 @@
 # ACTG
 
-ver1.02
+##ver1.02
 - Fix annotating regional information.
 
-ver1.01
+##ver1.01
 - Added frame shift annotation for regional information.
 
-ver1.00
+##ver1.00
 - This version supports three methods to map peptides (listed below).
   protein database mapping, variant splice graph mapping, six-frame transloation mapping
 
