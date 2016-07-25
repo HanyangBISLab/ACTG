@@ -152,6 +152,8 @@ public class Constants {
 
 				if(node.getTextContent().equalsIgnoreCase("yes")){
 					IS_INTRON = true;
+				}else{
+					theNumberOfSearchEdges -=1;
 				}
 				
 			}
@@ -166,7 +168,7 @@ public class Constants {
 				SEARCH_EDGES[edgeIndex++] = i;
 			}else if( (i > 0 && i < 4) && IS_JUNCTION){
 				SEARCH_EDGES[edgeIndex++] = i;
-			}else if( (i > 3 && i < ExonGraphGF.JVALUE-3) && IS_MUTATION){
+			}else if( (i > 3 && i < ExonGraphGF.JVALUE-2) && IS_MUTATION){
 				SEARCH_EDGES[edgeIndex++] = i;
 			}else if(i == 0){
 				SEARCH_EDGES[edgeIndex++] = i;
@@ -174,7 +176,7 @@ public class Constants {
 				SEARCH_EDGES[edgeIndex++] = i;
 			}
 		}
-				
+						
 		nl = doc.getElementsByTagName("Input");
 		
 		if(case_ == CONSTRUCTION_PHASE){
