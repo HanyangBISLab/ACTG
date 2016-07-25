@@ -1,5 +1,8 @@
 # ACTG
 
+##ver1.03
+- Fix infinite loop issue when taken vcf file as an input.
+
 ##ver1.02
 - Fix annotating regional information.
 
