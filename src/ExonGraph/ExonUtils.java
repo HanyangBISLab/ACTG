@@ -115,18 +115,35 @@ public class ExonUtils {
 			// : mark as 1
 			case INS_START_INDEX: case INS_START_INDEX+1: case INS_START_INDEX+2:
 				if(var == null){ var = "ins"; MS.mutation = 1; }
-			MS.pos = exon.get_start();
-			MS.substitution = exon.get_seq();
+			
+			if(MS.mutation == -1 && exonIndex == 0){
+				continue;
+			}
 			
 			// 어디서 왔는지, 기존이 무엇인지만 알면 됨
 			int iList[] = {0, 1, 2, 3, ExonGraph.JVALUE-1};
-			for(int i : iList){
-				if(prevExon.get_next(es.trans_cnt,i) != null && prevExon.get_next(es.trans_cnt,i).get_start() == exon.get_start()){
-					MS.origin = prevExon.get_next(es.trans_cnt, i).get_seq();
-					break;
+			if(MS.mutation == -1){
+				MS.substitution = prevExon.get_seq();
+				MS.origin = prevExon.get_seq();
+				MS.pos = prevExon.get_start();
+				while(true){
+					prevExon = prevExon.get_next(es.trans_cnt, 0);
+					if(prevExon != null && prevExon.get_start() < exon.get_start()){
+						MS.origin += prevExon.get_seq();
+					}else{
+						break;
+					}
+				}
+			}else{
+				MS.pos = exon.get_start();
+				MS.substitution = exon.get_seq();
+				for(int i : iList){
+					if(prevExon.get_next(es.trans_cnt,i) != null && prevExon.get_next(es.trans_cnt,i).get_start() == exon.get_start()){
+						MS.origin = prevExon.get_next(es.trans_cnt, i).get_seq();
+						break;
+					}
 				}
 			}
-			
 			
 			MSList.add(MS);
 			

@@ -16,7 +16,7 @@ import ExonGraph.ExonGraphGF;
 import Thread.ExonGraphGFT;
 
 public class Constants {
-	public static final String VERSION = "1.03";
+	public static final String VERSION = "1.04";
 	
 	public static String PEPTIDE_LIST_PATH = null;
 	public static String PROTEIN_DB_PATH = null;
@@ -57,6 +57,7 @@ public class Constants {
 	
 	//EDGE INFO
 	public static final int INTRON_EDGE = 13;
+	
 	
 	public static int readParams(String params, int case_) throws IOException, ParserConfigurationException, SAXException{
 		System.out.println("ACTG v"+VERSION);

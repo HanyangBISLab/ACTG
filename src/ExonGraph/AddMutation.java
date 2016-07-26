@@ -312,15 +312,15 @@ public class AddMutation {
 		for(int binIndex=binStart; binIndex<=binEnd; binIndex++){
 			ArrayList<MutationStructure> MSList = MSHash.get(binIndex);
 			if(MSList != null){
-				for(MutationStructure ms : MSList){					
+				for(MutationStructure ms : MSList){
 					if(ms.pos >= start && ms.pos <= end){
 						
 						if(ms.pos + ms.origin.length() - 1 > end){
 							// Large Scale Deletion일 경우 제외
 							// HandleLargeScaleDeletion 메소드에서 따로 처리함
 							// TODO: LargeScaleDeletion
-							/*System.out.println("TODO: LargeScaleDeletion");
-							System.out.println(ms.pos);*/
+							System.out.println("TODO: LargeScaleDeletion");
+							/*System.out.println(ms.pos);*/
 						}else{
 							MS.add(ms);
 						}
@@ -395,7 +395,7 @@ public class AddMutation {
 		/* Debugging Code
 		 * It prints reads*/
 		/*for(ExonRange er : exonRange){
-			System.out.println(er.start + "-" +er.end +"-" +er.mut);
+			System.out.println(er.start + "-" +er.end +"-" +er.isMut);
 		}
 		System.out.println("--");*/
 		
@@ -482,7 +482,8 @@ public class AddMutation {
 		/* Debugging Code
 		 * It prints connecting exons
 		 * 
-		 * newExon = startExon.get_next(0, 0);
+		 */ 
+		/*newExon = startExon.get_next(0, 0);
 		
 		while(true){
 			System.out.println(newExon.get_start()+"-"+newExon.get_end()+":"+newExon.get_seq());
@@ -553,24 +554,21 @@ public class AddMutation {
 				while(!(startE.get_start() == startPos)){
 					startE = startE.get_next(0, 0);
 				}startE = startE.get_prev(0, 0);
-				
 				//endPos
-				while(!(endE.get_start() >= msEndPos)){
-					
+				endE = startE;
+				
+				while(!(endE.get_start() >= msEndPos-1)){
 					endE = endE.get_next(0, 0);
-					
 				}
 				
-				tempNextExon = ExonUtils.getNextExon(startE, trans_cnt);
-				tempPrevExon = ExonUtils.getPrevExon(endE, trans_cnt);
+				tempNextExon = ExonUtils.getNextExon(endE, trans_cnt);
 				
 				for(ExonStructure es : tempNextExon){
-					startE.set_next_junc(es.trans_cnt, MEDIAN + EACH_MUT_MAX_SIZE*ms.mutation + mutCount[mutType], endE);
+					es.exon.set_prev_junc(es.trans_cnt, MEDIAN + EACH_MUT_MAX_SIZE*ms.mutation + mutCount[mutType], startE);
+					startE.set_next_junc(es.trans_cnt, MEDIAN + EACH_MUT_MAX_SIZE*ms.mutation + mutCount[mutType], es.exon);
 				}
 				
-				for(ExonStructure es : tempPrevExon){
-					endE.set_prev_junc(es.trans_cnt, MEDIAN + EACH_MUT_MAX_SIZE*ms.mutation + mutCount[mutType], startE);
-				}
+				
 				mutCount[mutType] ++;
 			}
 			
