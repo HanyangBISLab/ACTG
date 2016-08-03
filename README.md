@@ -1,6 +1,6 @@
 # ACTG
 
-##ver1.-5
+##ver1.05
 - Fix that overlapping peptide sequence could not be annotated correctly (contributed by KIST Jounghun Yeom).
 
 ##ver1.04
