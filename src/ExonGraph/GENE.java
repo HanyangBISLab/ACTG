@@ -945,43 +945,34 @@ public class GENE implements Serializable {
 							
 							try{
 								
-								int diff = (longestPeptideLength - curTPM.get_amino().length())*3;
 								int interval = 0;
 								int startLoci = 0;
 								int endLoci = 0;
+								int ntLength = curTPM.get_amino().length()*3;
 								
-								for(int j=0; j<exonList.size(); j++){
+								for(int j=exonList.size()-1; j>=0; j--){
 									EXON tempExon = exonList.get(j);
-									if(j == 0){
-										startLoci = tempExon.get_start() + GFFStartPos.startPos;
-									}else{
-										startLoci = tempExon.get_start();
-									}
-										
-									
 									if(j == exonList.size()-1){
 										endLoci = tempExon.get_start() + textPos;
 									}else{
 										endLoci = tempExon.get_end();
 									}
 									
-									interval = endLoci - startLoci + 1;
+									startLoci = tempExon.get_start();
 									
-									if(interval <= diff){
-										exonList.remove(j--);
-										diff -= interval;
-										GFFStartPos.startPos = 0;
-									}
+									interval += endLoci - startLoci + 1;
 									
-									if(interval > diff){
+									if(ntLength <= interval){
+										
+										GFFStartPos.startPos = (interval - ntLength);
 										GFFStartPos.nucleotide = curTPM.get_nucleotide();
-										GFFStartPos.startPos += diff;
+										for(int k=0; k<j; k++){
+											exonList.removeFirst();
+										}
 										break;
 									}
-									
-									
 								}
-								
+																
 								GFF.write(GFFStartPos, textPos, this.strand, this.trans_cnt);
 								Flat.write(GFFStartPos, textPos, this.strand, this.trans_cnt, curTPM.getOutput(), transcriptList, gene_id);
 							}catch(Exception E){
