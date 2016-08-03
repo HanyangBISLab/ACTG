@@ -1,5 +1,9 @@
 # ACTG
 
+##ver1.04
+- Fix deletion issue.
+- Largescale deletion issue has not been solved yet.
+
 ##ver1.03
 - Fix infinite loop issue when taken vcf file as an input.
 
