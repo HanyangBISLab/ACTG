@@ -31,9 +31,52 @@ public class GFF {
 		temporaryGFF = new ArrayList<String>();
 		//
 		ExonUtils.variationInit();
+		int frame = 0;
+		int prevEnd = -10;
+		
+		ArrayList<Integer> regionList = new ArrayList<Integer>();
+		int index = 1;
 		for(int i=0; i<sizeOfExon; i++){
 			EXON curExon = connectedExonList.get(i);
+			if(i==0){
+				regionList.add(curExon.get_start()+startPos.startPos);
+			}else{
+				if(prevEnd+1 == curExon.get_start()){
+					if(i+1 == sizeOfExon) regionList.set(index, curExon.get_start() + textPos);
+					else regionList.set(index, curExon.get_end());
+					prevEnd = curExon.get_end();
+					continue;
+				}else{
+					regionList.add(curExon.get_start());
+					index += 2;
+				}
+			}
+			
+			if(i+1 == sizeOfExon) regionList.add(curExon.get_start()+textPos);
+			else regionList.add(curExon.get_end());
+			prevEnd = curExon.get_end();
+		}index++;
+		
+		prevEnd = -10;
+		
+		for(int i=0; i<index; i+=2){
+			int start = regionList.get(i);
+			int end = regionList.get(i+1);
+			
 			StringBuilder GFFSB = new StringBuilder();
+
+			if(prevEnd+1 != start){
+				// Check Frame using 3 product rule
+				String frameString = String.valueOf(start);
+				int lenOfString = frameString.length();
+				frame = 0;
+				for(int j=0; j<lenOfString; j++){
+					frame += (frameString.charAt(j)-48);
+				}
+				frame = frame%3;
+			}
+			prevEnd = end;
+			
 			// seqName 부터 차레대로 기입
 			// 0: seqName
 			GFFSB.append(ExonGraph.Chrom)
@@ -42,22 +85,12 @@ public class GFF {
 			GFFSB.append("ACTG")
 			.append("\t");
 			// 2: feature
-			if(curExon.isExon){
-				GFFSB.append("exon").append("\t");
-			}else{
-				GFFSB.append("intron").append("\t");
-			}
+			GFFSB.append("exon").append("\t");
 			// 3: start
-			if(i == 0)
-				GFFSB.append(curExon.get_start() + startPos.startPos);
-			else
-				GFFSB.append(curExon.get_start());
+			GFFSB.append(start);
 			GFFSB.append("\t");
 			// 4: end
-			if(i == sizeOfExon-1)
-				GFFSB.append(curExon.get_start() + textPos);
-			else
-				GFFSB.append(curExon.get_end());
+			GFFSB.append(end);
 			GFFSB.append("\t");
 			// 5: score
 			GFFSB.append(".")
@@ -71,7 +104,7 @@ public class GFF {
 			GFFSB.append("\t");
 			
 			// 7: frame
-			GFFSB.append(".")
+			GFFSB.append(frame)
 			.append("\t");
 			
 			temporaryGFF.add(GFFSB.toString());
