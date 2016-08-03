@@ -1,5 +1,9 @@
 # ACTG
 
+##ver1.06
+- Add frame number in a GFF result file.
+- Modify genomic coordinates representation as straight forward way.
+
 ##ver1.05
 - Fix that overlapping peptide sequence could not be annotated correctly (contributed by KIST Jounghun Yeom).
 
