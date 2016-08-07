@@ -1,5 +1,8 @@
 # ACTG
 
+##ver1.07
+- catch wrong file formats in peptide list and VCF.
+
 ##ver1.06
 - Add frame number in a GFF result file.
 - Modify genomic coordinates representation as straight forward way.
