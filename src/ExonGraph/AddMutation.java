@@ -145,6 +145,7 @@ public class AddMutation {
 				lineSplit = line.split("\t");
 				if(lineSplit.length < 10){
 					Logger.getLogger("AddMutation").log(Level.WARNING, "There is a missing value caused by wrong VCF format.");
+					Environments.Error.exitError(Environments.Error.FORMAT_ERROR, "VCF_FILE_IS_INVALID");
 					continue; 
 				}
 				

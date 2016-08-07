@@ -65,6 +65,16 @@ public class SearchExonGraph {
 		LinkedList<String> peptideList = new LinkedList<String>();
 		String peptide = null;
 		while((peptide = peptideListBR.readLine()) != null) {
+			
+			// FORMAT CHECKING
+			char[] peptideValidation = peptide.toCharArray();
+			for(int i=0; i<peptideValidation.length; i++){
+				
+				if(peptideValidation[i] < 'A' || peptideValidation[i] > 'Z'){
+					Environments.Error.exitError(Environments.Error.FORMAT_ERROR, "PEPTIDE_FORMAT_IS_INVALID");
+				}
+			}
+			
 			peptideList.add(peptide);
 			Pattern pat1 = null;
 			Pattern pat2 = null;
