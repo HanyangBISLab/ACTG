@@ -1,5 +1,8 @@
 # ACTG
 
+##ver1.08
+- mapping peptides using threads
+
 ##ver1.07
 - catch wrong file formats in peptide list and VCF.
 
