@@ -3,6 +3,8 @@ package ExonGraph;
 import java.io.PrintWriter;
 import java.util.HashSet;
 
+import Thread.GeneT;
+
 public class ExonGraph {
 	static public boolean oneMode = true;
 	static public int JVALUE = 15; // The maximum number of junction variables
@@ -29,13 +31,9 @@ public class ExonGraph {
 	static public PrintWriter err1;
 	int XXX = 27;
 	
-	static public String Chrom;
-	static public String GeneID;
-	
 	static public HashSet<String> BioType = new HashSet<String>();
 	
 	
-	//RefSeqExonGraph Addition
 	public ExonGraph(){
 		if(this.getClass() == ExonGraphGF.class){
 			if(chromosome == null)
@@ -44,8 +42,6 @@ public class ExonGraph {
 		}else
 			chromosome = new Chromosome[CHR_NUM];
 	}
-	//END
-	
 	
 	public boolean get_initialize() { return initialize; }
 	
@@ -62,7 +58,6 @@ public class ExonGraph {
 		for(int i=0; i<CHR_NUM; i++){
 			totalGenes += chromosome[i].get_genecnt();
 		}
-		
 		totalGenes /= 100;
 		
 		if(totalGenes == 0){
@@ -72,19 +67,48 @@ public class ExonGraph {
 		int count = 0;
 		int ratio = 0;
 		int interval = 5;
+		int geneDefaultInterval = 1000;
 		for(int i=0; i<CHR_NUM; i++){
-			
-			for(int j=0;j<chromosome[i].get_genecnt();j++){
-				Chrom = chromosome[i].get_name(); GeneID = new String(chromosome[i].get_gene(j).get_gene_id());
+			int geneCnt = chromosome[i].get_genecnt();
+			for(int j=0;j<geneCnt;){
 				
-				//if(!GeneID.equalsIgnoreCase("ENSG00000124783")) continue;
+				if(Thread.activeCount() >= 6){
+					chromosome[i].GeneArray[j].chrID = chromosome[i].get_name();
+					chromosome[i].GeneArray[j].AminoExonSearch(visited, tree);
+					count ++;
+					j++;
+				}else{
+					int startIndex = j;
+					int endIndex = j+geneDefaultInterval;
+					if(endIndex > geneCnt){
+						endIndex = geneCnt;
+					}
+					
+					GeneT geneT = new GeneT(chromosome[i], startIndex, endIndex, visited, tree);
+					geneT.start();
+					j = endIndex;
+					count+= endIndex - startIndex;
+				}
 				
-				chromosome[i].get_gene(j).AminoExonSearch(visited, tree);
-				count ++;
 				if(ratio + interval <= count / totalGenes){
 					ratio = count/totalGenes;
-					System.out.println(ratio + " %");
+					
+					
+					if(ratio > 100){
+						System.out.println("100 %");
+					}else{
+						System.out.println(ratio + " %");
+					}
+					
 				}
+			}
+		}
+		
+		while(Thread.activeCount() != 1){
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 		}
 	}

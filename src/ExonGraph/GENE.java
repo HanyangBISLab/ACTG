@@ -26,7 +26,7 @@ public class GENE implements Serializable {
 	// strand: the option of implement
 	// true = 1 && false = -1
 	private ArrayList<EXON> trans;
-	
+	public String chrID = null;
 	/*
 	This size matches with trans_cnt.
 	This is because there is possibility to get different CDS region each transcript models.
@@ -710,35 +710,11 @@ public class GENE implements Serializable {
 		}
 	}
 
-	// OptimizeExonGraph By Hyunwoo//
-	public void OptimizeExonGraph() {
-		for(EXON i : trans) this.OptimizeExonGraph(i);
-	}
-
-	public void OptimizeExonGraph(EXON temp) {
-		if (temp == null || temp.get_check() == true) return;
-
-		for (int i = 0; i < this.trans_cnt; i++) {
-			temp.set_check(false);
-			for (int j = 0; j < temp.get_next(i).size(); j++) this.OptimizeExonGraph(temp.get_next(i, j));
-
-			int k = 0;
-			while (k < temp.get_next(i).size()) {
-				if (temp.get_next(i, k) == null) temp.remove_next_junc(i, k);
-				else k++;
-			}
-		}
-
-		int i = 0;
-		while (i < temp.get_next().size()) {
-			if (temp.get_next(i).size() == 0) temp.remove_next_junc(i);
-			else i++;
-		}
-	}
 
 	
 
 	public void AminoExonSearch(boolean visited, KAminoTree ac_tree) {
+			
 		//candidate = new ArrayList<Candidate>();
 		for(int loop=0 ; loop<this.trans_cnt; loop++) {
 			if(strand == true) {
@@ -759,7 +735,6 @@ public class GENE implements Serializable {
 		char nucl;
 		int textPos, treePos, framePos;
 		String exonSeq = exon.get_seq();
-		
 		LinkedList<EXON> present = null;
 		
 		if(startPos.startPos == 0 && exon.getFrame()[0] == visited && startPos.startExon.size() == 0) return -1;
@@ -792,70 +767,7 @@ public class GENE implements Serializable {
 			if(isMoreTranslatable){
 				if(ac_tree.get(treePos).get_matchlist() != null){
 					Pattern TPM = ac_tree.get(treePos).get_matchlist();
-					int longestPeptideLength = 0;
-					for(int i=0; i<=TPM.size(); i++){
-						if(i == 0){
-							longestPeptideLength = TPM.get_amino().length();
-						}else if(longestPeptideLength < TPM.get(i-1).get_amino().length()){
-							longestPeptideLength = TPM.get(i-1).get_amino().length();
-						}
-					}
-					
-					
-					for(int i=0; i<=TPM.size(); i++){
-						Pattern curTPM = null;
-						StartPos GFFStartPos = new StartPos(startPos);
-						LinkedList<EXON> exonList = GFFStartPos.startExon;
-						
-						
-						if(i == 0){
-							curTPM = TPM;
-						}else{
-							// 겹쳐서 맵핑되는 경우
-							// ex-
-							// AAAACC
-							//    ACC
-							
-							curTPM = TPM.get(i-1);
-						}
-						
-						try{
-							
-							int interval = 0;
-							int startLoci = 0;
-							int endLoci = 0;
-							int ntLength = curTPM.get_amino().length()*3;
-							
-							for(int j=exonList.size()-1; j>=0; j--){
-								EXON tempExon = exonList.get(j);
-								if(j == exonList.size()-1){
-									endLoci = tempExon.get_start() + textPos;
-								}else{
-									endLoci = tempExon.get_end();
-								}
-								
-								startLoci = tempExon.get_start();
-								
-								interval += endLoci - startLoci + 1;
-								
-								if(ntLength <= interval){
-									
-									GFFStartPos.startPos = (interval - ntLength);
-									GFFStartPos.nucleotide = curTPM.get_nucleotide();
-									for(int k=0; k<j; k++){
-										exonList.removeFirst();
-									}
-									break;
-								}
-							}
-							
-							GFF.write(GFFStartPos, textPos, this.strand, this.trans_cnt);
-							Flat.write(GFFStartPos, textPos, this.strand, this.trans_cnt, curTPM.getOutput(), transcriptList, gene_id);
-						}catch(Exception E){
-							
-						}
-					}
-					
+					addMapping(startPos, textPos, TPM);					
 				}
 			}
 		}
@@ -907,69 +819,7 @@ public class GENE implements Serializable {
 					// GFF와 NextSearch Result파일을 만드는 루틴
 					if(ac_tree.get(treePos).get_matchlist() != null){
 						Pattern TPM = ac_tree.get(treePos).get_matchlist();
-						int longestPeptideLength = 0;
-						for(int i=0; i<=TPM.size(); i++){
-							if(i == 0){
-								longestPeptideLength = TPM.get_amino().length();
-							}else if(longestPeptideLength < TPM.get(i-1).get_amino().length()){
-								longestPeptideLength = TPM.get(i-1).get_amino().length();
-							}
-						}
-						
-						
-						for(int i=0; i<=TPM.size(); i++){
-							Pattern curTPM = null;
-							StartPos GFFStartPos = new StartPos(startPos);
-							LinkedList<EXON> exonList = GFFStartPos.startExon;
-							
-							
-							if(i == 0){
-								curTPM = TPM;
-							}else{
-								// 겹쳐서 맵핑되는 경우
-								// ex-
-								// AAAACC
-								//    ACC
-								
-								curTPM = TPM.get(i-1);
-							}
-							
-							try{
-								
-								int interval = 0;
-								int startLoci = 0;
-								int endLoci = 0;
-								int ntLength = curTPM.get_amino().length()*3;
-								
-								for(int j=exonList.size()-1; j>=0; j--){
-									EXON tempExon = exonList.get(j);
-									if(j == exonList.size()-1){
-										endLoci = tempExon.get_start() + textPos;
-									}else{
-										endLoci = tempExon.get_end();
-									}
-									
-									startLoci = tempExon.get_start();
-									
-									interval += endLoci - startLoci + 1;
-									
-									if(ntLength <= interval){
-										
-										GFFStartPos.startPos = (interval - ntLength);
-										GFFStartPos.nucleotide = curTPM.get_nucleotide();
-										for(int k=0; k<j; k++){
-											exonList.removeFirst();
-										}
-										break;
-									}
-								}
-																
-								GFF.write(GFFStartPos, textPos, this.strand, this.trans_cnt);
-								Flat.write(GFFStartPos, textPos, this.strand, this.trans_cnt, curTPM.getOutput(), transcriptList, gene_id);
-							}catch(Exception E){
-								
-							}
-						}
+						addMapping(startPos, textPos, TPM);
 						
 					}
 					textPos++;
@@ -1066,5 +916,72 @@ public class GENE implements Serializable {
 		
 		//DONE!
 	}
+	
+	//Version 1.08
+	public void addMapping(StartPos startPos, int textPos, Pattern TPM){
+		int longestPeptideLength = 0;
+		for(int i=0; i<=TPM.size(); i++){
+			if(i == 0){
+				longestPeptideLength = TPM.get_amino().length();
+			}else if(longestPeptideLength < TPM.get(i-1).get_amino().length()){
+				longestPeptideLength = TPM.get(i-1).get_amino().length();
+			}
+		}
+		
+		
+		for(int i=0; i<=TPM.size(); i++){
+			Pattern curTPM = null;
+			StartPos GFFStartPos = new StartPos(startPos);
+			LinkedList<EXON> exonList = GFFStartPos.startExon;
+			
+			
+			if(i == 0){
+				curTPM = TPM;
+			}else{
+				// 겹쳐서 맵핑되는 경우
+				// ex-
+				// AAAACC
+				//    ACC
+				
+				curTPM = TPM.get(i-1);
+			}
+			
+			try{
+				
+				int interval = 0;
+				int startLoci = 0;
+				int endLoci = 0;
+				int ntLength = curTPM.get_amino().length()*3;
+				
+				for(int j=exonList.size()-1; j>=0; j--){
+					EXON tempExon = exonList.get(j);
+					if(j == exonList.size()-1){
+						endLoci = tempExon.get_start() + textPos;
+					}else{
+						endLoci = tempExon.get_end();
+					}
+					
+					startLoci = tempExon.get_start();
+					
+					interval += endLoci - startLoci + 1;
+					
+					if(ntLength <= interval){
+						
+						GFFStartPos.startPos = (interval - ntLength);
+						GFFStartPos.nucleotide = curTPM.get_nucleotide();
+						for(int k=0; k<j; k++){
+							exonList.removeFirst();
+						}
+						break;
+					}
+				}
+				
+				Flat.write(GFFStartPos, textPos, this.strand, this.trans_cnt, curTPM.getOutput(), transcriptList, gene_id, this.chrID);
+			}catch(Exception E){
+				
+			}
+		}
+	}
+	
 
 }

@@ -33,11 +33,13 @@ public class Flat {
 	private static String geneID_ = null;
 
 	private static Result results = null;
+	private static String CHR = null;
 	
 	
-	
-	public static void write(StartPos startPos, int textPos, boolean strand, int trans_cnt, String valText, ArrayList<Transcript> transcriptList, String geneID) throws IOException {
+	public static synchronized void write(StartPos startPos, int textPos, boolean strand, int trans_cnt, String valText, ArrayList<Transcript> transcriptList, String geneID, String chrID) throws IOException {
+		GFF.write(startPos, textPos, strand, trans_cnt, chrID);
 		
+		CHR = chrID;
 		theBestMappingType = UNKNOWN;
 		geneID_ = geneID;
 		
@@ -401,7 +403,7 @@ public class Flat {
 		theCurrMappingType = 0;
 		
 		if (score == PSEUDO) {
-			cdsInfo = "pseudo " + (ExonGraph.Chrom.replace("chr", "")) + " - - -";
+			cdsInfo = "pseudo " + (CHR.replace("chr", "")) + " - - -";
 			theCurrMappingType = PSEUDO;
 		}
 		// fully CDS!
@@ -429,7 +431,7 @@ public class Flat {
 		// 무조건 UTR!
 		else {
 			
-			cdsInfo = "utr " + (ExonGraph.Chrom.replace("chr", "")) + " ";
+			cdsInfo = "utr " + (CHR.replace("chr", "")) + " ";
 
 			for (ExonRangeType ERT : exonz) {
 				if(ERT.isCDS){
@@ -530,7 +532,7 @@ public class Flat {
 			}
 
 			// Chr 번호 기입
-			str.append(ExonGraph.Chrom.replace("chr", "")).append(" ");
+			str.append(CHR.replace("chr", "")).append(" ");
 
 			// start Position 기입
 			str.append(ms.pos).append(" ");

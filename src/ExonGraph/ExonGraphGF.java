@@ -102,7 +102,7 @@ public class ExonGraphGF extends ExonGraph implements Serializable{
 				int geneMaxIndex = curChr.get_genecnt();
 				
 				for(int geneIndex=0; geneIndex<geneMaxIndex; geneIndex++){
-					addMutation.addToGene(curChr.get_gene(geneIndex));
+					addMutation.addToGene(curChr.GeneArray[geneIndex]);
 				}
 			}
 		}
@@ -161,11 +161,12 @@ public class ExonGraphGF extends ExonGraph implements Serializable{
 				
 				if(fastaDescLength != -1 || readLine == -1){
 					RAFFasta.seek(0);
-					// newLine을 포함한 길이
-					fastaDescLength += 1;
+					// CRLF
+					fastaDescLength+=1;
 					break DescLength;
 				}
 			}
+		
 		// whitespace의 간격을 구함
 		// whitespace가 256byte를 넘어 갈 경우, bufCount를 계산하여 whitespaceInterval을 구함
 		boolean isSet = false;
@@ -187,7 +188,6 @@ public class ExonGraphGF extends ExonGraph implements Serializable{
 					bufCount ++;
 				}
 			}
-		
 		
 		boolean GeneStrand = true;
 		MakeExonGraph:
@@ -463,17 +463,16 @@ public class ExonGraphGF extends ExonGraph implements Serializable{
 		chromosome[CUR_CHR_COUNT-1] = new Chromosome(genes, CHR_IDENTIFIER);
 	}
 	
-	
 	private String[] getFastaString(int start, int end, boolean strand) throws IOException{
 		
 		int interval = end-start+1;
 
 		int diff = 0;
 		if((start-HEAD_LENGTH)%whiteSpaceInterval==0) { diff = 1; }
-			
+		
 		
 		RAFFasta.seek(start -1 - HEAD_LENGTH   + fastaDescLength   +  (start-HEAD_LENGTH)/whiteSpaceInterval - diff);
-		
+
 		byte[] tempByte = new byte[interval +(interval+HEAD_LENGTH+TAIL_LENGTH)/whiteSpaceInterval + 1     + HEAD_LENGTH + TAIL_LENGTH];
 		RAFFasta.read(tempByte);
 		

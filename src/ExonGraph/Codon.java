@@ -126,7 +126,7 @@ public class Codon {
 		tmp = 'L';
 		NuclToAminoRev_R.put("ATT", tmp);NuclToAminoRev_R.put("GTT", tmp);NuclToAminoRev_R.put("TTC", tmp);
 		NuclToAminoRev_R.put("CTC", tmp);NuclToAminoRev_R.put("ATC", tmp);NuclToAminoRev_R.put("GTC", tmp);
-
+		
 		if(Constants.IS_I_SAME_WITH_L) tmp = 'L';
 		else tmp = 'I';
 		NuclToAminoRev_R.put("TTA", tmp);NuclToAminoRev_R.put("CTA", tmp);NuclToAminoRev_R.put("ATA", tmp);
@@ -191,8 +191,7 @@ public class Codon {
 		tmp = 'G';
 		NuclToAminoRev_R.put("TGG", tmp);NuclToAminoRev_R.put("CGG", tmp);NuclToAminoRev_R.put("AGG", tmp);
 		NuclToAminoRev_R.put("GGG", tmp);
-
-
+				
 		// The end of down stream exon in transcript
 		tmp = 'S';
 		NuclToAmino.put("NCT", tmp);

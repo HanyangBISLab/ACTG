@@ -15,6 +15,7 @@ public class GFF {
 
 	private static FileWriter GFFWriter = null;
 	private static BufferedWriter GFFBW = null;
+	private static String CHR = null;
 	
 	public static ArrayList<String> temporaryGFF = null;
 	/**
@@ -22,7 +23,8 @@ public class GFF {
 	 * @throws IOException 
 	 * 
 	 */
-	public static void write(StartPos startPos, int textPos, boolean strand, int trans_cnt) throws IOException{
+	public static synchronized void write(StartPos startPos, int textPos, boolean strand, int trans_cnt, String chrID) throws IOException{
+		CHR = chrID;
 		LinkedList<EXON> connectedExonList = startPos.startExon;
 		
 		int sizeOfExon = connectedExonList.size();
@@ -79,7 +81,7 @@ public class GFF {
 			
 			// seqName 부터 차레대로 기입
 			// 0: seqName
-			GFFSB.append(ExonGraph.Chrom)
+			GFFSB.append(CHR)
 			.append("\t");
 			// 1: source
 			GFFSB.append("ACTG")
@@ -151,7 +153,7 @@ public class GFF {
 			}
 			
 			// Chr 번호 기입
-			str.append(ExonGraph.Chrom).append(":");
+			str.append(CHR).append(":");
 			
 			// start Position 기입
 			str.append(ms.pos).append(":");
