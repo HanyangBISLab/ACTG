@@ -403,7 +403,6 @@ public class Flat {
 		theCurrMappingType = 0;
 		
 		if (score == PSEUDO) {
-			//cdsInfo = "pseudo " + (CHR.replace("chr", "")) + " - - -";
 			cdsInfo = "pseudo(chr" + (CHR.replace("chr", "")) + ")";
 			theCurrMappingType = PSEUDO;
 		}
@@ -432,8 +431,6 @@ public class Flat {
 		// 무조건 UTR!
 		else {
 			
-			//cdsInfo = "utr " + (CHR.replace("chr", "")) + " ";
-
 			for (ExonRangeType ERT : exonz) {
 				if(ERT.isCDS){
 					
@@ -473,18 +470,14 @@ public class Flat {
 			
 			if(theCurrMappingType == UTR_3){
 				if(strand){
-					//cdsInfo += (cdsEnd) + " - x";
 					cdsInfo = "3`-UTR(chr" + CHR.replace("chr", "")+ ":g."+(cdsEnd) + ")";
 				}else{
-					//cdsInfo += (cdsStart) + " - x";
 					cdsInfo = "3`-UTR(chr" + CHR.replace("chr", "")+ ":g."+(cdsStart) + ")";
 				}
 			}else if(theCurrMappingType == UTR_5){
 				if(strand){
-					//cdsInfo += (cdsStart) + " x -";
 					cdsInfo = "5`-UTR(chr" + CHR.replace("chr", "")+ ":g."+(cdsStart) + ")";
 				}else{
-					//cdsInfo += (cdsEnd) + " x -";
 					cdsInfo = "5`-UTR(chr" + CHR.replace("chr", "")+ ":g."+(cdsEnd) + ")";
 				}
 			}
