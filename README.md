@@ -1,7 +1,10 @@
 # ACTG
 
+##ver1.09
+- attribute in flat file was modified (easier to understand).
+
 ##ver1.08
-- mapping peptides using threads
+- mapping peptides using threads.
 
 ##ver1.07
 - catch wrong file formats in peptide list and VCF.
