@@ -67,7 +67,8 @@ public class ExonGraph {
 		int count = 0;
 		int ratio = 0;
 		int interval = 5;
-		int geneDefaultInterval = 1000;
+		int geneDefaultInterval = 500;
+		boolean complete = false;
 		for(int i=0; i<CHR_NUM; i++){
 			int geneCnt = chromosome[i].get_genecnt();
 			for(int j=0;j<geneCnt;){
@@ -96,8 +97,12 @@ public class ExonGraph {
 					
 					if(ratio > 100){
 						System.out.println("100 %");
+						complete = true;
 					}else{
 						System.out.println(ratio + " %");
+						if(ratio == 100){
+							complete = true;
+						}
 					}
 					
 				}
@@ -110,6 +115,10 @@ public class ExonGraph {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+		}
+		
+		if(!complete){
+			System.out.println("100 %");
 		}
 	}
 	

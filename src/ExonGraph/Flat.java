@@ -403,7 +403,8 @@ public class Flat {
 		theCurrMappingType = 0;
 		
 		if (score == PSEUDO) {
-			cdsInfo = "pseudo " + (CHR.replace("chr", "")) + " - - -";
+			//cdsInfo = "pseudo " + (CHR.replace("chr", "")) + " - - -";
+			cdsInfo = "pseudo(chr" + (CHR.replace("chr", "")) + ")";
 			theCurrMappingType = PSEUDO;
 		}
 		// fully CDS!
@@ -421,7 +422,7 @@ public class Flat {
 		// Intron의 경우는 unknown대신 intron으로 표기
 		else if(score == UNKNOWN){
 			if(Constants.IS_INTRON){
-				cdsInfo = "intron";
+				cdsInfo = "exon-extension";
 			}else{
 				cdsInfo = "unknown";
 			}
@@ -431,7 +432,7 @@ public class Flat {
 		// 무조건 UTR!
 		else {
 			
-			cdsInfo = "utr " + (CHR.replace("chr", "")) + " ";
+			//cdsInfo = "utr " + (CHR.replace("chr", "")) + " ";
 
 			for (ExonRangeType ERT : exonz) {
 				if(ERT.isCDS){
@@ -472,15 +473,19 @@ public class Flat {
 			
 			if(theCurrMappingType == UTR_3){
 				if(strand){
-					cdsInfo += (cdsEnd) + " - x";
+					//cdsInfo += (cdsEnd) + " - x";
+					cdsInfo = "3`-UTR(chr" + CHR.replace("chr", "")+ ":g."+(cdsEnd) + ")";
 				}else{
-					cdsInfo += (cdsStart) + " - x";
+					//cdsInfo += (cdsStart) + " - x";
+					cdsInfo = "3`-UTR(chr" + CHR.replace("chr", "")+ ":g."+(cdsStart) + ")";
 				}
 			}else if(theCurrMappingType == UTR_5){
 				if(strand){
-					cdsInfo += (cdsStart) + " x -";
+					//cdsInfo += (cdsStart) + " x -";
+					cdsInfo = "5`-UTR(chr" + CHR.replace("chr", "")+ ":g."+(cdsStart) + ")";
 				}else{
-					cdsInfo += (cdsEnd) + " x -";
+					//cdsInfo += (cdsEnd) + " x -";
+					cdsInfo = "5`-UTR(chr" + CHR.replace("chr", "")+ ":g."+(cdsEnd) + ")";
 				}
 			}
 			
@@ -488,7 +493,7 @@ public class Flat {
 		if(isBest){
 			theBestMappingType = theCurrMappingType > theBestMappingType ? theCurrMappingType : theBestMappingType;
 			if(theBestMappingType == CDS){
-				cdsInfo = "";
+				cdsInfo = "CDS";
 			}else if(theBestMappingType == FS){
 				cdsInfo = "FS";
 			}
@@ -513,36 +518,34 @@ public class Flat {
 			// 뮤테이션 타입을 기입.
 			switch (ms.mutation) {
 			case -2:
-				str.append("jnc ");
+				str.append("jnc");
 				break;
 			case -1:
-				str.append("del ");
+				str.append("del");
 				break;
 			case 0:
-				str.append("snv ");
+				str.append("snv");
 				break;
 			case 1:
-				str.append("ins ");
+				str.append("ins");
 				break;
 			case 2:
-				str.append("alt ");
+				str.append("exon-skipping");
 				break;
 			default:
 				Logger.getLogger("GFF").log(Level.SEVERE, "You should check your code related to GFF Maker.");
 			}
 
 			// Chr 번호 기입
-			str.append(CHR.replace("chr", "")).append(" ");
+			str.append("(chr").append(CHR.replace("chr", "")).append(":g.");
 
 			// start Position 기입
-			str.append(ms.pos).append(" ");
+			str.append(ms.pos);
 
 			// 뮤테이션 타입마다 표시하는 게 다름
 			if (ms.mutation >= -2 && ms.mutation <= 1) {
-				str.append(ms.origin).append(" ").append(ms.substitution);
-			} else {
-				str.append("- -");
-			}
+				str.append(ms.origin).append(">").append(ms.substitution);
+			}str.append(")");
 			
 			// 구분자 ;
 			str.append(";");
