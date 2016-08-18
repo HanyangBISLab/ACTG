@@ -170,7 +170,7 @@ public class SearchExonGraph {
 			ac.done();
 			System.out.println("Mapping on the six-frame translation database is complete");
 		}
-		
+	
 		if(EG != null){
 			System.out.println("Mapping on the variant splice graph");
 			ExonGraph.nowStatus = !ExonGraph.nowStatus;
