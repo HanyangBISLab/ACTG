@@ -116,7 +116,15 @@ public class Flat {
 		// Event Information
 		normalText.append(eventText.toString());
 		
-		StringBuilder resultKey = new StringBuilder(normalText.toString());
+		StringBuilder resultKey = null;
+		
+		if(Constants.EQUIVALENT_TEST_USING_GENOMIC_LOCATION){
+			resultKey = new StringBuilder();
+		}else{
+			resultKey = new StringBuilder(normalText.toString());
+		}
+			
+		
 		// chr기입
 		results.chr = GFF.temporaryGFF.get(0).split("\t")[0];
 		for(String gff : GFF.temporaryGFF){
