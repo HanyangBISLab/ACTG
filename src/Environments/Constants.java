@@ -54,6 +54,7 @@ public class Constants {
 	public static String MAPPING_METHOD = null;
 	
 	public static boolean TRANSLATION_END_OF_TRANSCRIPT = true;
+	public static boolean EQUIVALENT_TEST_USING_GENOMIC_LOCATION = true;
 	
 	//EDGE INFO
 	public static final int INTRON_EDGE = 13;

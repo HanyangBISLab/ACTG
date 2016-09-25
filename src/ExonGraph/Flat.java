@@ -120,7 +120,15 @@ public class Flat {
 		// chr기입
 		results.chr = GFF.temporaryGFF.get(0).split("\t")[0];
 		for(String gff : GFF.temporaryGFF){
-			resultKey.append(gff);
+			
+			if(Constants.EQUIVALENT_TEST_USING_GENOMIC_LOCATION){
+				String[] spliter = gff.split("\t");
+				resultKey.append(spliter[3]).append("\t").append(spliter[4]).append("\t");
+			}else{
+				resultKey.append(gff);
+			}
+			
+			
 		}
 		if(ResultMapping.ResultTable.get(resultKey.toString()) == null){
 			
