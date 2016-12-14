@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Params>
+	<Construction>
+		<Inputs>
+			<!-- Transcript Model [folder path] -->
+			<Input format="GTF" type="transcriptome">data/Ensembl.85.gtf</Input>
+			<!-- Reference Genome [folder path] -->
+			<Input format="FASTA" type="referenceGenome">data/GRCh38.fa</Input>
+		</Inputs>
+
+		<Outputs>
+			<!-- Serialization file of the variant splice graph [file path] -->
+			<Output format="ser" type="graphFile">GRCh38.Ensembl.85.ser</Output>
+		</Outputs>
+	</Construction>
+
+	<Systems>
+		<!-- If you have enough system resources, then it's possible to set more -->
+		<TheNumberOfThreads>3</TheNumberOfThreads>
+	</Systems>
+</Params>
+

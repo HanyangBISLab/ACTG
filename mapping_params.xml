@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Params>
+	<Mapping>
+		<Environment>
+			<!-- 
+			PV: Mapping [P]rotein database first, then next [V]ariant splice graph.
+			PS: Mapping [P]rotein database first, then next [S]ix-frame translation.
+			VO: Mapping [V]ariant splice graph [O]nly.
+			SO: Mapping [S]ix-frame translation [O]nly.
+			Default is VO.
+			-->
+			<MappingMethod>VO</MappingMethod>
+
+			<!-- 
+			Isoleucine is equivalent to leucine
+			-->
+			<ILSame>yes</ILSame>
+			
+			<!-- Input peptide list [file] -->
+			<Input format="list" type="peptideList">data/nextsearchIntronPep.txt</Input>
+			<!-- Output Path [folder] -->
+			<Output type="outputPath">output</Output>
+		</Environment>
+
+		<ProteinDB>
+			<!-- Protein database path [folder] -->
+			<Input format="FASTA" type="proteinDB">data/ProteinDB</Input>
+			<!-- Consider singlue amino-acid variants (SAVs) -->
+			<SAVs>yes</SAVs>
+		</ProteinDB>
+
+		<VariantSpliceGraph>
+			<Input format="ser" type="graphFile">GRCh38.Ensembl.85.ser</Input>
+			<JunctionVariation>yes</JunctionVariation>
+			<ExonSkipping>yes</ExonSkipping>
+			<IntronMapping>yes</IntronMapping>
+
+			<Mutation>no</Mutation>
+			<Input format="VCF" type="mutation">data/VCF_Paper</Input>
+		</VariantSpliceGraph>
+
+		<SixFrameTranslation>
+			<Input format="FASTA" type="referenceGenome">data/GRCh37.fa</Input>
+		</SixFrameTranslation>
+	</Mapping>
+
+	<Systems>
+		<!-- If you have enough system resources, then it's possible to set more -->
+		<TheNumberOfThreads>3</TheNumberOfThreads>
+	</Systems>
+</Params>
