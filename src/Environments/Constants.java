@@ -86,9 +86,7 @@ public class Constants {
 		
 		System.out.println("<System setting>");
 		System.out.println(" The number of threads: "+THE_NUMBER_OF_THREADS);
-	
-		
-		
+			
 		if(case_ == SEARCH_PHASE){
 			
 			//MAPPING METHOD
@@ -287,10 +285,6 @@ public class Constants {
 			
 			if(GRAPH_OUTPUT_PATH == null){
 				Error.exitError(Error.PARAM_ERROR, "GRAPH_OUTPUT_PATH");
-			}
-			
-			if(ExonGraphGFT.TheNumberOfThreads == -1){
-				Error.exitError(Error.PARAM_ERROR, "THE_NUMBER_OF_THREADS");
 			}
 			
 			
