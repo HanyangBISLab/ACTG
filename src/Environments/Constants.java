@@ -54,11 +54,13 @@ public class Constants {
 	public static String MAPPING_METHOD = null;
 	
 	public static boolean TRANSLATION_END_OF_TRANSCRIPT = true;
-	public static boolean EQUIVALENT_TEST_USING_GENOMIC_LOCATION = true;
+	public static boolean EQUIVALENT_TEST_USING_GENOMIC_LOCATION = false;
 	
 	//EDGE INFO
 	public static final int INTRON_EDGE = 13;
 	
+	//THREAD INFO
+	public static int THE_NUMBER_OF_THREADS = 3;
 	
 	public static int readParams(String params, int case_) throws IOException, ParserConfigurationException, SAXException{
 		System.out.println("ACTG v"+VERSION);
@@ -78,13 +80,13 @@ public class Constants {
 
 		int theNumberOfSearchEdges = ExonGraphGF.JVALUE;
 		
-		if(case_ == CONSTRUCTION_PHASE){
-			nl = doc.getElementsByTagName("TheNumberOfThreads");
-			ExonGraphGFT.TheNumberOfThreads = Integer.parseInt(nl.item(0).getTextContent());
-			
-			System.out.println("<System setting>");
-			System.out.println(" The number of threads: "+ExonGraphGFT.TheNumberOfThreads);
-		}
+		
+		nl = doc.getElementsByTagName("TheNumberOfThreads");
+		THE_NUMBER_OF_THREADS = Integer.parseInt(nl.item(0).getTextContent());
+		
+		System.out.println("<System setting>");
+		System.out.println(" The number of threads: "+THE_NUMBER_OF_THREADS);
+	
 		
 		
 		if(case_ == SEARCH_PHASE){
@@ -159,7 +161,6 @@ public class Constants {
 				}
 				
 			}
-			
 		}
 		
 		// 이벤트를 고려한 Edges 배열

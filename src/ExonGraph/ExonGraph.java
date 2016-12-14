@@ -3,6 +3,7 @@ package ExonGraph;
 import java.io.PrintWriter;
 import java.util.HashSet;
 
+import Environments.Constants;
 import Thread.GeneT;
 
 public class ExonGraph {
@@ -73,7 +74,7 @@ public class ExonGraph {
 			int geneCnt = chromosome[i].get_genecnt();
 			for(int j=0;j<geneCnt;){
 				
-				if(Thread.activeCount() >= 6){
+				if(Thread.activeCount() >= Constants.THE_NUMBER_OF_THREADS){
 					chromosome[i].GeneArray[j].chrID = chromosome[i].get_name();
 					chromosome[i].GeneArray[j].AminoExonSearch(visited, tree);
 					count ++;

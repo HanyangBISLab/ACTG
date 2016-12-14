@@ -86,7 +86,7 @@ public class BuildExonGraph {
 		TheNumberOfTasks = fastaFileList.length;
 		ExonGraphGF EG = null;
 		
-		ExonGraphGFT[] exonGraphGFTList = new ExonGraphGFT[ExonGraphGFT.TheNumberOfThreads-1];
+		ExonGraphGFT[] exonGraphGFTList = new ExonGraphGFT[Constants.THE_NUMBER_OF_THREADS-1];
 		if(gtfFileList.length == fastaFileList.length){
 			// GTF 파일 수와 Fasta 파일 수가 같을 경우
 			// 즉, 1.fa  -- 1.gtf
@@ -106,9 +106,9 @@ public class BuildExonGraph {
 					System.out.println(fastaFileList[fastaFileList.length-1].getName()+" is done");
 				}
 				
-				if(Thread.activeCount() != ExonGraphGFT.TheNumberOfThreads){
+				if(Thread.activeCount() != Constants.THE_NUMBER_OF_THREADS){
 					
-					for(int i=0; i<ExonGraphGFT.TheNumberOfThreads-1; i++){
+					for(int i=0; i<Constants.THE_NUMBER_OF_THREADS-1; i++){
 						if(exonGraphGFTList[i] == null || exonGraphGFTList[i].isDone){
 							exonGraphGFTList[i] = new ExonGraphGFT(EG, gtfFileList[fIndex], fastaFileList[fIndex], -1);
 							exonGraphGFTList[i].start();
@@ -132,9 +132,9 @@ public class BuildExonGraph {
 					System.out.println(fastaFileList[fastaFileList.length-1].getName()+" is done");
 				}
 				
-				if(Thread.activeCount() != ExonGraphGFT.TheNumberOfThreads){
+				if(Thread.activeCount() != Constants.THE_NUMBER_OF_THREADS){
 					
-					for(int i=0; i<ExonGraphGFT.TheNumberOfThreads-1; i++){
+					for(int i=0; i<Constants.THE_NUMBER_OF_THREADS-1; i++){
 						if(exonGraphGFTList[i] == null || exonGraphGFTList[i].isDone){
 							exonGraphGFTList[i] = new ExonGraphGFT(EG, gtfFileList[0], fastaFileList[fIndex], -1);
 							exonGraphGFTList[i].start();

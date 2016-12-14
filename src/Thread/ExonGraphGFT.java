@@ -7,7 +7,6 @@ import ExonGraph.ExonGraphGF;
 
 public class ExonGraphGFT extends Thread{
 	public static int TheNumberOfSuccess = 0;
-	public static int TheNumberOfThreads = -1;
 	
 	public File gtfFile = null;
 	public File fastaFile = null;
