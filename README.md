@@ -1,10 +1,10 @@
-/****************************************************************/
-/*								*/
-/*       ACTG v1.10 : Novel peptide mapping onto gene models	*/
-/*                Release: Dec 19, 2016				*/
-/*             Hanyang University, Seoul, Korea			*/
-/*								*/
-/****************************************************************/
+/****************************************************************/<br>
+/*								*/<br>
+/*       ACTG v1.10 : Novel peptide mapping onto gene models	*/<br>
+/*                Release: Dec 19, 2016				*/<br>
+/*             Hanyang University, Seoul, Korea			*/<br>
+/*								*/<br>
+/****************************************************************/<br>
 
 ##ver1.10
 - Added threads mapping.
