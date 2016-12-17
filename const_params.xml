@@ -2,20 +2,20 @@
 <Params>
 	<Construction>
 		<Inputs>
-			<!-- Transcript Model [folder path] -->
-			<Input format="GTF" type="transcriptome">data/Ensembl.85.gtf</Input>
-			<!-- Reference Genome [folder path] -->
-			<Input format="FASTA" type="referenceGenome">data/GRCh38.fa</Input>
+			<!-- Path of a folder which contains transcriptome models. -->
+			<Input format="GTF" type="transcriptome">GTF</Input>
+			<!-- Path of a folder which contains reference genome. -->
+			<Input format="FASTA" type="referenceGenome">FASTA</Input>
 		</Inputs>
 
 		<Outputs>
-			<!-- Serialization file of the variant splice graph [file path] -->
-			<Output format="ser" type="graphFile">GRCh38.Ensembl.85.ser</Output>
+			<!-- Name of a constructed variant splice graph file. -->
+			<Output format="ser" type="graphFile">sample.ser</Output>
 		</Outputs>
 	</Construction>
 
 	<Systems>
-		<!-- If you have enough system resources, then it's possible to set more -->
+		<!-- Setting the number of threads. A proper setting can increase the speed of construction. -->
 		<TheNumberOfThreads>3</TheNumberOfThreads>
 	</Systems>
 </Params>

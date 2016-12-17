@@ -470,7 +470,6 @@ public class ExonGraphGF extends ExonGraph implements Serializable{
 		int diff = 0;
 		if((start-HEAD_LENGTH)%whiteSpaceInterval==0) { diff = 1; }
 		
-		
 		RAFFasta.seek(start -1 - HEAD_LENGTH   + fastaDescLength   +  (start-HEAD_LENGTH)/whiteSpaceInterval - diff);
 
 		byte[] tempByte = new byte[interval +(interval+HEAD_LENGTH+TAIL_LENGTH)/whiteSpaceInterval + 1     + HEAD_LENGTH + TAIL_LENGTH];
