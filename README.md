@@ -1,7 +1,7 @@
 /****************************************************************/<br>
 <br>
-ACTG v1.10 : Novel peptide mapping onto gene models<br>
-Release: Dec 19, 2016<br>
+ACTG v1.11 : Novel peptide mapping onto gene models<br>
+Release: Nov 5, 2018<br>
 Hanyang University, Seoul, Korea<br>
 <br>
 /****************************************************************/<br>
