@@ -159,7 +159,6 @@ public class Flat {
 		int frame = 0;
 		int cumulativePos = 0;
 		
-		
 		// find mapped CDS to the firstMappedExon
 		if(strand){
 			for( ; indexOfERT<sizeOfERT; indexOfERT++){
@@ -168,7 +167,7 @@ public class Flat {
 				ExonRangeType curERT = ERT.get(indexOfERT);
 				
 				if(curERT.start <= matchingStart && curERT.end >= matchingStart){
-					frame = Math.abs(cumulativePos + curERT.start - matchingStart);
+					frame = Math.abs(cumulativePos + matchingStart - curERT.start);
 					break;
 				}else{
 					cumulativePos += (curERT.end-curERT.start+1);

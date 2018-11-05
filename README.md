@@ -6,6 +6,9 @@ Hanyang University, Seoul, Korea<br>
 <br>
 /****************************************************************/<br>
 
+##ver1.11
+- Fixed wrong of frame shift annotation.
+
 ##ver1.10
 - Added threads mapping.
 
