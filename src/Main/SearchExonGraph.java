@@ -79,11 +79,11 @@ public class SearchExonGraph {
 			Pattern pat1 = null;
 			Pattern pat2 = null;
 			if(Environments.Constants.IS_I_SAME_WITH_L){
-				pat1 = new Pattern(peptide.replaceAll("I", "L"), peptide, "TCA", 0.0, 0.0, peptide);
-				pat2 = new Pattern(new StringBuilder(peptide.replaceAll("I", "L")).reverse().toString(), new StringBuilder(peptide).reverse().toString(), "ACT", 0.0, 0.0, peptide);
+				pat1 = new Pattern(peptide.replaceAll("I", "L"), peptide, "TCA", peptide);
+				pat2 = new Pattern(new StringBuilder(peptide.replaceAll("I", "L")).reverse().toString(), new StringBuilder(peptide).reverse().toString(), "ACT", peptide);
 			}else{
-				pat1 = new Pattern(peptide, peptide, "TCA", 0.0, 0.0, peptide);
-				pat2 = new Pattern(new StringBuilder(peptide).reverse().toString(), new StringBuilder(peptide).reverse().toString(), "ACT", 0.0, 0.0, peptide);
+				pat1 = new Pattern(peptide, peptide, "TCA", peptide);
+				pat2 = new Pattern(new StringBuilder(peptide).reverse().toString(), new StringBuilder(peptide).reverse().toString(), "ACT", peptide);
 			}
 			
 			
@@ -123,8 +123,8 @@ public class SearchExonGraph {
 						replacedPeptide = originalPeptide;
 					}
 					
-					Pattern pat1 = new Pattern(replacedPeptide, originalPeptide, "TCA", 0.0, 0.0, originalPeptide);
-					Pattern pat2 = new Pattern(new StringBuilder(replacedPeptide).reverse().toString(), new StringBuilder(originalPeptide).reverse().toString(), "ACT", 0.0, 0.0, originalPeptide);
+					Pattern pat1 = new Pattern(replacedPeptide, originalPeptide, "TCA", originalPeptide);
+					Pattern pat2 = new Pattern(new StringBuilder(replacedPeptide).reverse().toString(), new StringBuilder(originalPeptide).reverse().toString(), "ACT", originalPeptide);
 					tmp.BuildKeyword(pat1, tmp.Tree);
 					tmp.BuildKeyword(pat2, tmp.RTree);
 				}
