@@ -6,9 +6,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.Stack;
 
 import Environments.Constants;
-
 
 public class GENE implements Serializable {
 	/**
@@ -733,123 +733,157 @@ public class GENE implements Serializable {
 	}
 
 	int AminoExonSearch(KAminoNode ac_tree, EXON exon ,int prePos, StartPos startPos, boolean visited, int frame) {
-		int loop1;
-		char nucl;
-		int textPos, treePos, framePos;
-		String exonSeq = exon.get_seq();
-		LinkedList<EXON> present = null;
 		
-		if(startPos.startPos == 0 && exon.getFrame()[0] == visited && startPos.startExon.size() == 0) return -1;
-		if(frame != 0 && exon.getFrame()[3-frame] == visited) return -1;
+		Stack<EXON> exonStack = new Stack<EXON>();
+		Stack<Integer> treePosStack = new Stack<Integer>();
+		Stack<Integer> frameStack = new Stack<Integer>();
+		Stack<StartPos> startPosStack = new Stack<StartPos>();
 		
+		// stack init
+		exonStack.add(exon);
+		treePosStack.add(prePos);
+		startPosStack.add(startPos);
+		frameStack.add(frame);
 		
-		framePos = startPos.nucleotide.length();
-
-		textPos=0+frame;
-		treePos=prePos;
-		
-		// The end of transcript translates one more
-		boolean isMoreTranslatable = false;
-		if(Constants.TRANSLATION_END_OF_TRANSCRIPT){
-			if(this.strand){
-				if(exon.get_start() == Integer.MAX_VALUE-1){
-					if(startPos.nucleotide.length() == 2){
-						startPos.nucleotide += "N";
-						nucl = Codon.NuclToAmino(startPos.nucleotide);
-						treePos = ac_tree.get(treePos).get_next(nucl);
-						isMoreTranslatable = true;
-					}
-				}
-			}else{
-				if(exon.get_start() == -1 && frame == 2){
-					startPos.nucleotide = "N";
-				}
-			}
+		while(!exonStack.isEmpty()) {
 			
-			if(isMoreTranslatable){
-				if(ac_tree.get(treePos).get_matchlist() != null){
-					Pattern TPM = ac_tree.get(treePos).get_matchlist();
-					addMapping(startPos, textPos, TPM);					
-				}
-			}
-		}
-		
-		
-		// The end of transcript translates one more END//
-		
-		if(exonSeq != null) {
-			startPos.startExon.add(exon);
-			present = startPos.startExon;
+			EXON targetExon = exonStack.pop();
+			int targetPos = treePosStack.pop();
+			StartPos targetStartPos = startPosStack.pop();
+			int targetFrame = frameStack.pop();
 			
-			while(textPos < exonSeq.length()) {
-				
-				if(startPos.nucleotide.length() != 2 ) {
-					startPos.nucleotide += exonSeq.charAt(textPos);
-					textPos++;
-				}
-				else {
-					startPos.nucleotide += exonSeq.charAt(textPos);
-					nucl = 'X';
-					try{
-					if(this.strand) nucl = Codon.NuclToAmino(startPos.nucleotide);
-					else nucl = Codon.NuclToAmino_R(startPos.nucleotide);
-					}catch(Exception e){
-						System.out.println(startPos.nucleotide);
-						System.out.println(nucl);
-					}
-					
-					if(ac_tree.get(treePos).get_next(nucl) == ac_tree.get(ac_tree.get(treePos).get_failstate()).get_next(nucl)) {
-						startPos.startPos += (ac_tree.get(treePos).get_depth() - ac_tree.get(ac_tree.get(treePos).get_next(nucl)).get_depth() + 1)*3;
-						
-						while(startPos.startPos >= present.get(0).get_seq().length()) {
-							startPos.startPos -= present.get(0).get_seq().length();
-							present.remove(0);
-							if(present.size() == 0) {
-								startPos.nucleotide = "";
-								break;
-							}
-							
-							if(present.get(0).getFrame()[(3 - (startPos.startPos%3))%3] == visited && startPos.startPos < present.get(0).get_seq().length()) {
-								return -1;
-							}
+			boolean skipExon = false;
+			
+			int loop1;
+			char nucl;
+			int textPos, treePos, framePos;
+			String exonSeq = targetExon.get_seq();
+			LinkedList<EXON> present = null;
+			
+			if(targetStartPos.startPos == 0 && targetExon.getFrame()[0] == visited && targetStartPos.startExon.size() == 0) skipExon = true;
+			if(targetFrame != 0 && targetExon.getFrame()[3-targetFrame] == visited) skipExon = true;
+			
+			if(skipExon) continue;
+			
+			framePos = targetStartPos.nucleotide.length();
 
+			textPos=0+targetFrame;
+			treePos=targetPos;
+			
+			// The end of transcript translates one more
+			boolean isMoreTranslatable = false;
+			if(Constants.TRANSLATION_END_OF_TRANSCRIPT){
+				if(this.strand){
+					if(targetExon.get_start() == Integer.MAX_VALUE-1){
+						if(targetStartPos.nucleotide.length() == 2){
+							targetStartPos.nucleotide += "N";
+							nucl = Codon.NuclToAmino(targetStartPos.nucleotide);
+							treePos = ac_tree.get(treePos).get_next(nucl);
+							isMoreTranslatable = true;
 						}
 					}
-
-					treePos = ac_tree.get(treePos).get_next(nucl);
-
-					// GFF�� NextSearch Result�뙆�씪�쓣 留뚮뱶�뒗 猷⑦떞
+				}else{
+					if(targetExon.get_start() == -1 && targetFrame == 2){
+						targetStartPos.nucleotide = "N";
+					}
+				}
+				
+				if(isMoreTranslatable){
 					if(ac_tree.get(treePos).get_matchlist() != null){
 						Pattern TPM = ac_tree.get(treePos).get_matchlist();
-						addMapping(startPos, textPos, TPM);
-						
+						addMapping(targetStartPos, textPos, TPM);					
 					}
-					textPos++;
-					startPos.nucleotide = "";
 				}
 			}
-		}
-
-		for(loop1=0; loop1<this.trans_cnt; loop1++){
-			for(int jEdge : Environments.Constants.SEARCH_EDGES){
-				if(exon.get_next(loop1,jEdge) != null) {
+			
+			
+			// The end of transcript translates one more END//
+			
+			if(exonSeq != null) {
+				targetStartPos.startExon.add(targetExon);
+				present = targetStartPos.startExon;
+				
+				while(textPos < exonSeq.length()) {
 					
-					if(exonSeq != null) {
-						if(exonSeq.length() <= frame) {
-							AminoExonSearch(ac_tree, exon.get_next(loop1,jEdge), treePos, new StartPos(frame - exonSeq.length()), visited, frame - exonSeq.length());
+					if(targetStartPos.nucleotide.length() != 2 ) {
+						targetStartPos.nucleotide += exonSeq.charAt(textPos);
+						textPos++;
+					}
+					else {
+						targetStartPos.nucleotide += exonSeq.charAt(textPos);
+						nucl = 'X';
+						try{
+						if(this.strand) nucl = Codon.NuclToAmino(targetStartPos.nucleotide);
+						else nucl = Codon.NuclToAmino_R(targetStartPos.nucleotide);
+						}catch(Exception e){
+							System.out.println(targetStartPos.nucleotide);
+							System.out.println(nucl);
+						}
+						
+						if(ac_tree.get(treePos).get_next(nucl) == ac_tree.get(ac_tree.get(treePos).get_failstate()).get_next(nucl)) {
+							targetStartPos.startPos += (ac_tree.get(treePos).get_depth() - ac_tree.get(ac_tree.get(treePos).get_next(nucl)).get_depth() + 1)*3;
+							
+							while(targetStartPos.startPos >= present.get(0).get_seq().length()) {
+								targetStartPos.startPos -= present.get(0).get_seq().length();
+								present.remove(0);
+								if(present.size() == 0) {
+									targetStartPos.nucleotide = "";
+									break;
+								}
+								
+								if(present.get(0).getFrame()[(3 - (targetStartPos.startPos%3))%3] == visited && targetStartPos.startPos < present.get(0).get_seq().length()) {
+									skipExon = true;
+									break;
+								}
+
+							}
+						}
+						
+						if(skipExon) break;
+						
+						treePos = ac_tree.get(treePos).get_next(nucl);
+
+						// GFF�� NextSearch Result�뙆�씪�쓣 留뚮뱶�뒗 猷⑦떞
+						if(ac_tree.get(treePos).get_matchlist() != null){
+							Pattern TPM = ac_tree.get(treePos).get_matchlist();
+							addMapping(targetStartPos, textPos, TPM);
+							
+						}
+						textPos++;
+						targetStartPos.nucleotide = "";
+					}
+				}
+			}
+			
+			if(skipExon) continue;
+			
+			for(loop1=0; loop1<this.trans_cnt; loop1++){
+				for(int jEdge : Environments.Constants.SEARCH_EDGES){
+					if(targetExon.get_next(loop1,jEdge) != null) {
+						exonStack.add(targetExon.get_next(loop1,jEdge));
+						treePosStack.add(treePos);
+						
+						if(exonSeq != null) {
+							if(exonSeq.length() <= targetFrame) {
+								startPosStack.add(new StartPos(targetFrame - exonSeq.length()));
+								frameStack.add(targetFrame - exonSeq.length());
+							}
+							else {
+								startPosStack.add(new StartPos(targetStartPos));
+								frameStack.add(0);
+							}
 						}
 						else {
-							AminoExonSearch(ac_tree, exon.get_next(loop1,jEdge), treePos, new StartPos(startPos), visited, 0);
+							startPosStack.add(new StartPos(targetFrame));
+							frameStack.add(targetFrame);
 						}
 					}
-					else AminoExonSearch(ac_tree, exon.get_next(loop1,jEdge), treePos, new StartPos(frame), visited, frame);
 				}
-				
 			}
-		}
 
-		if (frame != 0) exon.setFrame(3-frame, visited);
-		else exon.setFrame(framePos, visited);
+			if (targetFrame != 0) targetExon.setFrame(3-targetFrame, visited);
+			else targetExon.setFrame(framePos, visited);
+		}
 
 		return 0;
 	}
