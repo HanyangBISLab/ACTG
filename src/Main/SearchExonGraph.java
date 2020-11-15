@@ -29,7 +29,6 @@ public class SearchExonGraph {
 
 	
 	public static void main(String[] args) throws IOException, ClassNotFoundException{
-		
 		if(args.length == 2){
 			System.setOut(new PrintStream(new FileOutputStream(args[1])));
 		}

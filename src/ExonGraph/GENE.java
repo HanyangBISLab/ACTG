@@ -273,7 +273,7 @@ public class GENE implements Serializable {
 			prevExon = trans.get(loop1);
 			while (prevExon != null) {
 				//loopA2 = loopA3 = 2;
-				// edge를 3번으로 고정
+				// edge瑜� 3踰덉쑝濡� 怨좎젙
 				loopA2 = loopA3 = 3;
 				
 				hJunc = tJunc = 0;
@@ -285,7 +285,7 @@ public class GENE implements Serializable {
 				}
 
 				if (prevExon.get_head() != null) {
-					// edge를 3번으로 고정
+					// edge瑜� 3踰덉쑝濡� 怨좎젙
 					//while (prevExon.get_prev(loop1,0).get_next(loop1, loopA2) != null) loopA2++;
 
 					for (loop2 = 0; loop2 < 4; loop2++) {
@@ -317,7 +317,7 @@ public class GENE implements Serializable {
 				}
 
 				if (prevExon.get_tail() != null) {
-					// edge를 3번으로 고정
+					// edge瑜� 3踰덉쑝濡� 怨좎젙
 					//while (prevExon.get_next(loop1,0).get_prev(loop1,loopA3) != null) loopA3++;
 
 					for (loop2 = 0; loop2 < 4; loop2++) {
@@ -376,7 +376,7 @@ public class GENE implements Serializable {
 		int compare_min, compare_min_pos, compare_now_pos;
 		int exon_min, exon_min_pos, exon_now_pos;
 
-		//------------------ �롪퍓占쏙옙洹⑥삕�좎띂寃ュ뜝��� 嶺뚳퐣瑗띰옙占�----------------- //
+		//------------------ 占쎈―�뜐�뜝�룞�삕域밟뫁�굲占쎌쥙�쓡野껁깷�쐻占쏙옙占� 癲ル슪�맋�몭�씛�삕�뜝占�----------------- //
 		for(i=0;i<this.trans_cnt;i++) {
 			pre_exon = trans.get(i);
 			while(pre_exon != null) {
@@ -715,6 +715,8 @@ public class GENE implements Serializable {
 
 	public void AminoExonSearch(boolean visited, KAminoTree ac_tree) {
 			
+		System.out.println(this.chrID+"\t"+this.gene_id);
+		
 		//candidate = new ArrayList<Candidate>();
 		for(int loop=0 ; loop<this.trans_cnt; loop++) {
 			if(strand == true) {
@@ -816,7 +818,7 @@ public class GENE implements Serializable {
 
 					treePos = ac_tree.get(treePos).get_next(nucl);
 
-					// GFF와 NextSearch Result파일을 만드는 루틴
+					// GFF�� NextSearch Result�뙆�씪�쓣 留뚮뱶�뒗 猷⑦떞
 					if(ac_tree.get(treePos).get_matchlist() != null){
 						Pattern TPM = ac_tree.get(treePos).get_matchlist();
 						addMapping(startPos, textPos, TPM);
@@ -898,8 +900,8 @@ public class GENE implements Serializable {
 				}
 				
 			}else if(start < allExon.get(i).start){
-				//end+1 == allExon.get(i).start 와 같으면,
-				//intron구간이 0이므로 제외한다.
+				//end+1 == allExon.get(i).start �� 媛숈쑝硫�,
+				//intron援ш컙�씠 0�씠誘�濡� �젣�쇅�븳�떎.
 				if(end+1 != allExon.get(i).start){
 					ExonRangeType ERT = new ExonRangeType();
 					ERT.start = end+1;
@@ -938,7 +940,7 @@ public class GENE implements Serializable {
 			if(i == 0){
 				curTPM = TPM;
 			}else{
-				// 겹쳐서 맵핑되는 경우
+				// 寃뱀퀜�꽌 留듯븨�릺�뒗 寃쎌슦
 				// ex-
 				// AAAACC
 				//    ACC
