@@ -1003,7 +1003,6 @@ public class GENE implements Serializable {
 					
 					if(ntLength <= interval){
 						GFFStartPos.startPos = (interval - ntLength);
-						GFFStartPos.nucleotide = curTPM.get_nucleotide();
 						for(int k=0; k<j; k++){
 							exonList.removeFirst();
 						}

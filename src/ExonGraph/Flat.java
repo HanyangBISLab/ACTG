@@ -43,7 +43,7 @@ public class Flat {
 		theBestMappingType = UNKNOWN;
 		geneID_ = geneID;
 		
-		// 최초 1회 파일을 생성함
+		// 理쒖큹 1�쉶 �뙆�씪�쓣 �깮�꽦�븿
 		if (valOutput == null) {
 			String defaultValName = Constants.OUTPUT_VSG_FLAT;
 			String defaultLogName = Constants.OUTPUT_VSG_LOG;
@@ -57,9 +57,9 @@ public class Flat {
 			FWLog = new FileWriter(logOutput);
 			BWLog = new BufferedWriter(FWLog);
 			
-			// Index를 추가함
-			BWVal.append("GFFID\tPeptide\tGeneID\tAttribute\n");
-			BWLog.append("GFFID\tGeneID\tTranscriptID\tAttribute\n");
+			// Index瑜� 異붽��븿
+			BWVal.append("GFFID\tPeptide\tNucleotides\tGeneID\tAttribute\n");
+			BWLog.append("GFFID\tGeneID\tNucleotides\tTranscriptID\tAttribute\n");
 		}
 
 		
@@ -70,7 +70,7 @@ public class Flat {
 		int count = 0;
 		int jncGap = 0;
 		boolean isJncOrAlt = false;
-		// jnc 변이에 대한 중복제거를 위함
+		// jnc 蹂��씠�뿉 ���븳 以묐났�젣嫄곕�� �쐞�븿
 		
 		
 		// Event Extractor
@@ -82,7 +82,7 @@ public class Flat {
 				count++;
 				eventText.append(MS_toString(variation));
 				for(int j=0; j<variation.size(); j++){
-					// jnc의 경우 변형된 nucleotide 수 만큼 패널티를 줌
+					// jnc�쓽 寃쎌슦 蹂��삎�맂 nucleotide �닔 留뚰겮 �뙣�꼸�떚瑜� 以�
 					MutationStructure_ var = variation.get(j);
 					if(var.mutation == -2){
 						
@@ -108,6 +108,8 @@ public class Flat {
 
 		results = new Result();
 		normalText.append(valText).append("\t");
+		// Nucleotide Sequences
+		normalText.append(startPos.nucleotide).append("\t");
 		// GENEID
 		normalText.append(String.valueOf(geneID_)).append("\t");
 		// CDSRegion
@@ -125,7 +127,7 @@ public class Flat {
 		}
 			
 		
-		// chr기입
+		// chr湲곗엯
 		results.chr = GFF.temporaryGFF.get(0).split("\t")[0];
 		for(String gff : GFF.temporaryGFF){
 			
@@ -215,13 +217,13 @@ public class Flat {
 		int matchingStart = 0;
 		int matchingEnd = 0;
 		
-		// CDS정보를 추출함
+		// CDS�젙蹂대�� 異붿텧�븿
 		EXON lastExon = null;
 		int sizeOfExonList = connectedExonList.size();
 		
-		// Matching Region에 대한 정보를 저장
-		// 짝수 인덱스: 시작 위치
-		// 홀수 인덱스: 끝 위치
+		// Matching Region�뿉 ���븳 �젙蹂대�� ���옣
+		// 吏앹닔 �씤�뜳�뒪: �떆�옉 �쐞移�
+		// ���닔 �씤�뜳�뒪: �걹 �쐞移�
 		int[] matchingRegion = new int[sizeOfExonList*2];
 		
 		
@@ -260,7 +262,7 @@ public class Flat {
 			
 		}
 
-		// 각 transcript의 CDS구간이 Shared Peptide와 많이 겹치면 점수가 높음
+		// 媛� transcript�쓽 CDS援ш컙�씠 Shared Peptide�� 留롮씠 寃뱀튂硫� �젏�닔媛� �넂�쓬
 		int score[] = new int[transcriptList.size()];
 		
 		for(int i=0; i<score.length; i++){
@@ -269,7 +271,7 @@ public class Flat {
 
 		int transListIndex = 0;
 
-		// transcript와 매칭된 패턴 사이의 similarity를 계산
+		// transcript�� 留ㅼ묶�맂 �뙣�꽩 �궗�씠�쓽 similarity瑜� 怨꾩궛
 		for (Transcript T : transcriptList) {
 			ArrayList<ExonRangeType> ERT = T.exonList;
 			boolean isMatchingRegion = false;
@@ -316,16 +318,16 @@ public class Flat {
 			}
 			
 			
-			// matchingRegion이 포함되지 않으면 -1로 가장 낮은 점수 부여
+			// matchingRegion�씠 �룷�븿�릺吏� �븡�쑝硫� -1濡� 媛��옣 �궙�� �젏�닔 遺��뿬
 			if(!isMatchingRegion || (containScore + jncGap != matchingLength) ){
 				score[transListIndex] = UNKNOWN;				
 			}
 			
 			
 
-			// transcript: ACGTCG-ACGTGT-ACGGAT가 있다고 가정하면,
-			//                TCG-ACG   -ACG 와 같은 방식으로 맵핑되면 안됨
-			// 즉, 완벽하게 exon에 맵핑되어야 함
+			// transcript: ACGTCG-ACGTGT-ACGGAT媛� �엳�떎怨� 媛��젙�븯硫�,
+			//                TCG-ACG   -ACG �� 媛숈� 諛⑹떇�쑝濡� 留듯븨�릺硫� �븞�맖
+			// 利�, �셿踰쏀븯寃� exon�뿉 留듯븨�릺�뼱�빞 �븿
 			if(score[transListIndex] != UNKNOWN){
 				for(int i=0; i<sizeOfExonList; i++){
 					if(i+1 < sizeOfExonList && matchingRegion[i*2 + 1] +1 < matchingRegion[i*2 +2]){
@@ -361,7 +363,7 @@ public class Flat {
 			
 		}
 
-		// 가장 점수가 높은 transcript를 선정
+		// 媛��옣 �젏�닔媛� �넂�� transcript瑜� �꽑�젙
 		int bestScoreTranscriptIndex = 0;
 		for (int i = 1; i < transcriptList.size(); i++) {
 			if (score[i] > score[bestScoreTranscriptIndex]) {
@@ -381,10 +383,10 @@ public class Flat {
 		for(int i=0; i<transcriptList.size(); i++){
 			if(theBestMappingType == CDS || theBestMappingType == FS) break;
 			
-			// 모델이 없는 경우는 제외
+			// 紐⑤뜽�씠 �뾾�뒗 寃쎌슦�뒗 �젣�쇅
 			if(score[i] != UNKNOWN && score[i] != PSEUDO){
 				
-				// 5`utr과 3`utr의 경우만 Log로 출력함
+				// 5`utr怨� 3`utr�쓽 寃쎌슦留� Log濡� 異쒕젰�븿
 				String mappingInfo = getRegionMappingType(transcriptList.get(i), score[i], matchingLength, matchingStart, matchingEnd, strand, false);
 				
 				if(mappingInfo.length() == 0){
@@ -430,10 +432,10 @@ public class Flat {
 				theCurrMappingType = CDS;
 			}
 		}
-		// 어떠한 경우에도 포함되지 않음
-		// 즉, 모델에 없는 경우
-		// unknown으로 표기
-		// Intron의 경우는 unknown대신 intron으로 표기
+		// �뼱�뼚�븳 寃쎌슦�뿉�룄 �룷�븿�릺吏� �븡�쓬
+		// 利�, 紐⑤뜽�뿉 �뾾�뒗 寃쎌슦
+		// unknown�쑝濡� �몴湲�
+		// Intron�쓽 寃쎌슦�뒗 unknown���떊 intron�쑝濡� �몴湲�
 		else if(score == UNKNOWN){
 			if(Constants.IS_INTRON){
 				cdsInfo = "exon-extension";
@@ -443,7 +445,7 @@ public class Flat {
 			
 			theCurrMappingType = UNKNOWN;
 		}
-		// 무조건 UTR!
+		// 臾댁“嫄� UTR!
 		else {
 			
 			for (ExonRangeType ERT : exonz) {
@@ -523,7 +525,7 @@ public class Flat {
 		for (int i = 0; i < msSize; i++) {
 			MutationStructure_ ms = MS_.get(i);
 
-			// 뮤테이션 타입을 기입.
+			// 裕ㅽ뀒�씠�뀡 ���엯�쓣 湲곗엯.
 			switch (ms.mutation) {
 			case -2:
 				str.append("jnc");
@@ -544,18 +546,18 @@ public class Flat {
 				Logger.getLogger("GFF").log(Level.SEVERE, "You should check your code related to GFF Maker.");
 			}
 
-			// Chr 번호 기입
+			// Chr 踰덊샇 湲곗엯
 			str.append("(chr").append(CHR.replace("chr", "")).append(":g.");
 
-			// start Position 기입
+			// start Position 湲곗엯
 			str.append(ms.pos);
 
-			// 뮤테이션 타입마다 표시하는 게 다름
+			// 裕ㅽ뀒�씠�뀡 ���엯留덈떎 �몴�떆�븯�뒗 寃� �떎由�
 			if (ms.mutation >= -2 && ms.mutation <= 1) {
 				str.append(ms.origin).append(">").append(ms.substitution);
 			}str.append(")");
 			
-			// 구분자 ;
+			// 援щ텇�옄 ;
 			str.append(";");
 						
 		}
