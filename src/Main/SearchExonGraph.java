@@ -29,6 +29,7 @@ public class SearchExonGraph {
 
 	
 	public static void main(String[] args) throws IOException, ClassNotFoundException{
+		
 		if(args.length == 2){
 			System.setOut(new PrintStream(new FileOutputStream(args[1])));
 		}
@@ -96,7 +97,7 @@ public class SearchExonGraph {
 		
 		tmp.BuildFlink(); tmp.BuildOlink(); tmp.NFAtoDFA();
 		
-		// ProteinDB 서치를 고려하면, ProteinDB서치를 수행하고 키워드 트리를 새로 만듦
+		// ProteinDB �꽌移섎�� 怨좊젮�븯硫�, ProteinDB�꽌移섎�� �닔�뻾�븯怨� �궎�썙�뱶 �듃由щ�� �깉濡� 留뚮벀
 		if(Constants.IS_PROTEIN_DB){
 			System.out.println("Mapping on the protein database");
 			ProteinDBFlat mappedPeptides = extractUnmappedPeptideListFromProteinDB(tmp.Tree, peptideList);
@@ -190,8 +191,8 @@ public class SearchExonGraph {
 	
 	
 	/**
-	 * protein fasta 파일을 읽고, ac_tree(peptide list정보를 저장)와 맵핑되는 
-	 * peptides를 반환함.
+	 * protein fasta �뙆�씪�쓣 �씫怨�, ac_tree(peptide list�젙蹂대�� ���옣)�� 留듯븨�릺�뒗 
+	 * peptides瑜� 諛섑솚�븿.
 	 * 
 	 * @param ac_tree
 	 * @return
@@ -221,7 +222,7 @@ public class SearchExonGraph {
 			int index = 0;
 			ArrayList<Protein> proteinDB = new ArrayList<Protein>();
 			
-			// ProteinDB를 읽음
+			// ProteinDB瑜� �씫�쓬
 			while((line = BR.readLine())!=null){
 				if(line.startsWith(">")){
 					if(proteinSeq.length() != 0){
@@ -235,7 +236,7 @@ public class SearchExonGraph {
 					proteinSeq.append(line);
 				}
 			}
-			// DB 마지막 라인 추가
+			// DB 留덉�留� �씪�씤 異붽�
 			if(proteinSeq.length() != 0){
 				proteinDB.get(index).proteinSeq = proteinSeq.toString();
 				proteinSeq.delete(0, proteinSeq.length());
