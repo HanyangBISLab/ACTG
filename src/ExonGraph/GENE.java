@@ -735,18 +735,19 @@ public class GENE implements Serializable {
 
 	int AminoExonSearch(KAminoNode ac_tree, EXON exon ,int prePos, StartPos startPos, boolean visited, int frame) {
 		
-		this.nucleotides.setLength(0);
 		
 		Stack<EXON> exonStack = new Stack<EXON>();
 		Stack<Integer> treePosStack = new Stack<Integer>();
 		Stack<Integer> frameStack = new Stack<Integer>();
 		Stack<StartPos> startPosStack = new Stack<StartPos>();
+		Stack<Integer> initNuclLength = new Stack<Integer>();
 		
 		// stack init
 		exonStack.add(exon);
 		treePosStack.add(prePos);
 		startPosStack.add(startPos);
 		frameStack.add(frame);
+		initNuclLength.add(0);
 		
 		while(!exonStack.isEmpty()) {
 			
@@ -754,6 +755,8 @@ public class GENE implements Serializable {
 			int targetPos = treePosStack.pop();
 			StartPos targetStartPos = startPosStack.pop();
 			int targetFrame = frameStack.pop();
+			int nuclLen = initNuclLength.pop();
+			this.nucleotides.setLength(nuclLen);
 			
 			boolean skipExon = false;
 			
@@ -868,6 +871,7 @@ public class GENE implements Serializable {
 					if(targetExon.get_next(loop1,jEdge) != null) {
 						exonStack.add(targetExon.get_next(loop1,jEdge));
 						treePosStack.add(treePos);
+						initNuclLength.add(this.nucleotides.length());
 						
 						if(exonSeq != null) {
 							if(exonSeq.length() <= targetFrame) {
