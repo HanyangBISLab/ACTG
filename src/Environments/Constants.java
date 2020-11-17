@@ -16,7 +16,7 @@ import ExonGraph.ExonGraphGF;
 import Thread.ExonGraphGFT;
 
 public class Constants {
-	public static final String VERSION = "1.10";
+	public static final String VERSION = "1.20";
 	
 	public static String PEPTIDE_LIST_PATH = null;
 	public static String PROTEIN_DB_PATH = null;
@@ -161,7 +161,7 @@ public class Constants {
 			}
 		}
 		
-		// 이벤트를 고려한 Edges 배열
+		// �씠踰ㅽ듃瑜� 怨좊젮�븳 Edges 諛곗뿴
 		SEARCH_EDGES = new int[theNumberOfSearchEdges];
 		int edgeIndex = 0;
 		for(int i=0; i<ExonGraphGF.JVALUE; i++){
