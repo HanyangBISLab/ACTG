@@ -59,8 +59,8 @@ public class Flat {
 			BWLog = new BufferedWriter(FWLog);
 			
 			// Index瑜� 異붽��븿
-			BWVal.append("GFFID\tPeptide\tNucleotides\tGeneID\tAttribute\n");
-			BWLog.append("GFFID\tGeneID\tNucleotides\tTranscriptID\tAttribute\n");
+			BWVal.append("GFFID\tPeptide\tNucleotide\tGeneID\tAttribute\n");
+			BWLog.append("GFFID\tGeneID\tNucleotide\tTranscriptID\tAttribute\n");
 		}
 
 		
