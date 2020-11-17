@@ -1,10 +1,15 @@
 /****************************************************************/<br>
 <br>
-ACTG v1.11 : Novel peptide mapping onto gene models<br>
-Release: Nov 5, 2018<br>
+ACTG v1.20 : Novel peptide mapping onto gene models<br>
+Release: Nov 17, 2020<br>
 Hanyang University, Seoul, Korea<br>
 <br>
 /****************************************************************/<br>
+
+##ver1.20
+- Recursive routine was changed to Iterative routine to avoid "STACK OVERFLOW."
+
+- Nucleotide sequence correspoding to a peptide was displayed in FLAT result file.
 
 ##ver1.11
 - Fixed wrong of frame shift annotation.
