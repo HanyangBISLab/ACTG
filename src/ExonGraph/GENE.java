@@ -995,7 +995,26 @@ public class GENE implements Serializable {
 				int endLoci = 0;
 				int ntLength = curTPM.get_amino().length()*3;
 				int len = this.nucleotides.length();
-				String nucleotides = this.nucleotides.substring(len - ntLength, len);
+				StringBuilder sequence = new StringBuilder();
+				if(this.strand) {
+					int index = len - ntLength;
+					for(; index<len; index++) {
+						sequence.append(this.nucleotides.charAt(index));
+					}
+				} else {
+					// reverse-complementary
+					int index = len - ntLength;
+					for(; index<len; index++) {
+						switch(this.nucleotides.charAt(index)) {
+						case 'A': sequence.append('T'); break;
+						case 'C': sequence.append('G'); break;
+						case 'T': sequence.append('A'); break;
+						case 'G': sequence.append('C'); break;
+						default : sequence.append('N'); break;
+						}
+						sequence = sequence.reverse();
+					}
+				}
 				
 				for(int j=exonList.size()-1; j>=0; j--){
 					EXON tempExon = exonList.get(j);
@@ -1018,7 +1037,7 @@ public class GENE implements Serializable {
 					}
 				}
 				
-				Flat.write(GFFStartPos, textPos, this.strand, this.trans_cnt, curTPM.getOutput(), transcriptList, gene_id, this.chrID, nucleotides);
+				Flat.write(GFFStartPos, textPos, this.strand, this.trans_cnt, curTPM.getOutput(), transcriptList, gene_id, this.chrID, sequence.toString());
 			}catch(Exception E){
 				
 			}
