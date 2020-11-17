@@ -36,7 +36,8 @@ public class Flat {
 	private static String CHR = null;
 	
 	
-	public static synchronized void write(StartPos startPos, int textPos, boolean strand, int trans_cnt, String valText, ArrayList<Transcript> transcriptList, String geneID, String chrID) throws IOException {
+	public static synchronized void write(StartPos startPos, int textPos, boolean strand, int trans_cnt, 
+			String valText, ArrayList<Transcript> transcriptList, String geneID, String chrID, String nucleotides) throws IOException {
 		GFF.write(startPos, textPos, strand, trans_cnt, chrID);
 		
 		CHR = chrID;
@@ -109,7 +110,7 @@ public class Flat {
 		results = new Result();
 		normalText.append(valText).append("\t");
 		// Nucleotide Sequences
-		normalText.append(startPos.nucleotide).append("\t");
+		normalText.append(nucleotides).append("\t");
 		// GENEID
 		normalText.append(String.valueOf(geneID_)).append("\t");
 		// CDSRegion

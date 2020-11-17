@@ -38,6 +38,9 @@ public class GENE implements Serializable {
 	 */
 	public Transcript intronscript = new Transcript();
 
+	// nucleotide sequences along with traversing.
+	private StringBuilder nucleotides = new StringBuilder();
+	
 	class StartPos {
 		LinkedList<EXON> startExon;
 		int startPos;
@@ -715,8 +718,6 @@ public class GENE implements Serializable {
 
 	public void AminoExonSearch(boolean visited, KAminoTree ac_tree) {
 			
-		System.out.println(this.chrID+"\t"+this.gene_id);
-		
 		//candidate = new ArrayList<Candidate>();
 		for(int loop=0 ; loop<this.trans_cnt; loop++) {
 			if(strand == true) {
@@ -733,6 +734,8 @@ public class GENE implements Serializable {
 	}
 
 	int AminoExonSearch(KAminoNode ac_tree, EXON exon ,int prePos, StartPos startPos, boolean visited, int frame) {
+		
+		this.nucleotides.setLength(0);
 		
 		Stack<EXON> exonStack = new Stack<EXON>();
 		Stack<Integer> treePosStack = new Stack<Integer>();
@@ -777,6 +780,7 @@ public class GENE implements Serializable {
 					if(targetExon.get_start() == Integer.MAX_VALUE-1){
 						if(targetStartPos.nucleotide.length() == 2){
 							targetStartPos.nucleotide += "N";
+							nucleotides.append("N");
 							nucl = Codon.NuclToAmino(targetStartPos.nucleotide);
 							treePos = ac_tree.get(treePos).get_next(nucl);
 							isMoreTranslatable = true;
@@ -785,6 +789,7 @@ public class GENE implements Serializable {
 				}else{
 					if(targetExon.get_start() == -1 && targetFrame == 2){
 						targetStartPos.nucleotide = "N";
+						nucleotides.append("N");
 					}
 				}
 				
@@ -804,6 +809,7 @@ public class GENE implements Serializable {
 				present = targetStartPos.startExon;
 				
 				while(textPos < exonSeq.length()) {
+					nucleotides.append(exonSeq.charAt(textPos));
 					
 					if(targetStartPos.nucleotide.length() != 2 ) {
 						targetStartPos.nucleotide += exonSeq.charAt(textPos);
@@ -988,6 +994,8 @@ public class GENE implements Serializable {
 				int startLoci = 0;
 				int endLoci = 0;
 				int ntLength = curTPM.get_amino().length()*3;
+				int len = this.nucleotides.length();
+				String nucleotides = this.nucleotides.substring(len - ntLength, len);
 				
 				for(int j=exonList.size()-1; j>=0; j--){
 					EXON tempExon = exonList.get(j);
@@ -1010,7 +1018,7 @@ public class GENE implements Serializable {
 					}
 				}
 				
-				Flat.write(GFFStartPos, textPos, this.strand, this.trans_cnt, curTPM.getOutput(), transcriptList, gene_id, this.chrID);
+				Flat.write(GFFStartPos, textPos, this.strand, this.trans_cnt, curTPM.getOutput(), transcriptList, gene_id, this.chrID, nucleotides);
 			}catch(Exception E){
 				
 			}
