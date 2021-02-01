@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Stack;
 
+import Environments.Codon;
 import Environments.Constants;
 
 public class GENE implements Serializable {

@@ -5,8 +5,8 @@ import java.io.BufferedInputStream;
  * Writer: progistar
  * 
  * Description:
- * ExonGraph를 GTF파일과 FASTA파일을 이용하여 생성
- * Fasta파일의 이름은 chrNum.fa 형식
+ * ExonGraph瑜� GTF�뙆�씪怨� FASTA�뙆�씪�쓣 �씠�슜�븯�뿬 �깮�꽦
+ * Fasta�뙆�씪�쓽 �씠由꾩� chrNum.fa �삎�떇
  * ex>
  * 1.fa
  * 2.fa
@@ -44,8 +44,8 @@ public class ExonGraphGF extends ExonGraph implements Serializable{
 	private int fastaDescLength = 0;
 	private int whiteSpaceInterval = 0;
 	
-	// 염색체 개수를 저장
-	// ExonGraphGF 클래스 간 공유
+	// �뿼�깋泥� 媛쒖닔瑜� ���옣
+	// ExonGraphGF �겢�옒�뒪 媛� 怨듭쑀
 	static private int CHR_COUNT = 0;
 	private int CUR_CHR_COUNT = 0;
 	
@@ -62,13 +62,13 @@ public class ExonGraphGF extends ExonGraph implements Serializable{
 	 * 8: attributes (ID)
 	 */
 	
-	// 유전자를 ArrayList로 저장
+	// �쑀�쟾�옄瑜� ArrayList濡� ���옣
 	private ArrayList<GENE> genes = null;
-	// 트랜스크립트를 ArrayList로 저장
+	// �듃�옖�뒪�겕由쏀듃瑜� ArrayList濡� ���옣
 	private ArrayList<EXON> trans = null;
 	
-	// Junction Variation을 고려범위
-	// Exon의 앞, 뒤 7 개의 문자를 고려
+	// Junction Variation�쓣 怨좊젮踰붿쐞
+	// Exon�쓽 �븵, �뮘 7 媛쒖쓽 臾몄옄瑜� 怨좊젮
 	private final int HEAD_LENGTH = 7;
 	private final int TAIL_LENGTH = 7;
 	
@@ -88,7 +88,7 @@ public class ExonGraphGF extends ExonGraph implements Serializable{
 		input.close();
 		file.close();
 		
-		// Mutation 처리
+		// Mutation 泥섎━
 		
 		System.out.println("The Number of Chromosomes: "+CHR_COUNT);
 		
@@ -112,18 +112,18 @@ public class ExonGraphGF extends ExonGraph implements Serializable{
 	}
 
 	public ExonGraphGF (File gtfFile, File fastaFile, int cls) throws IOException{
-		// 염색체 개수 증가
+		// �뿼�깋泥� 媛쒖닔 利앷�
 		CHR_COUNT++;
 		CUR_CHR_COUNT = CHR_COUNT;
-		// ExonGraph 생성시,
-		// Junction Variation, Alternative Splicing, 그리고
-		// 메모리 최적화를 위한 옵션
+		// ExonGraph �깮�꽦�떆,
+		// Junction Variation, Alternative Splicing, 洹몃━怨�
+		// 硫붾え由� 理쒖쟻�솕瑜� �쐞�븳 �샃�뀡
 		CLS = cls;
 		
 		File fasta = fastaFile;
 		File gtf = gtfFile;
 		
-		// 해당 파일이 없을 경우, ExonGraph를 생성하지 못함
+		// �빐�떦 �뙆�씪�씠 �뾾�쓣 寃쎌슦, ExonGraph瑜� �깮�꽦�븯吏� 紐삵븿
 		if(!fasta.exists() || !gtf.exists()){
 			System.out.println("File is not existed!");
 			return;
@@ -131,14 +131,14 @@ public class ExonGraphGF extends ExonGraph implements Serializable{
 		
 		genes = new ArrayList<GENE>();
 		
-		// 트랜스크립트 개수 초기화
+		// �듃�옖�뒪�겕由쏀듃 媛쒖닔 珥덇린�솕
 		int trans_cnt = 1;
 		
 		// 
 		String prevGeneID = null;
 		
-		// 염색체 식별자
-		// Fasta File 이름이 식별자로 사용
+		// �뿼�깋泥� �떇蹂꾩옄
+		// Fasta File �씠由꾩씠 �떇蹂꾩옄濡� �궗�슜
 		String CHR_IDENTIFIER = fastaFile.getName().substring(0, fastaFile.getName().lastIndexOf("."));
 		
 		GENE gene = null;
@@ -151,7 +151,7 @@ public class ExonGraphGF extends ExonGraph implements Serializable{
 		BufferedReader BRGtf = new BufferedReader(FRGtf);
 		RAFFasta = new RandomAccessFile(fastaFile, "r");
 		
-		// > 디스크립션 길이를 구함
+		// > �뵒�뒪�겕由쎌뀡 湲몄씠瑜� 援ы븿
 		DescLength:
 			for(;;){
 				byte[] readBuf = new byte[256];
@@ -167,8 +167,8 @@ public class ExonGraphGF extends ExonGraph implements Serializable{
 				}
 			}
 		
-		// whitespace의 간격을 구함
-		// whitespace가 256byte를 넘어 갈 경우, bufCount를 계산하여 whitespaceInterval을 구함
+		// whitespace�쓽 媛꾧꺽�쓣 援ы븿
+		// whitespace媛� 256byte瑜� �꽆�뼱 媛� 寃쎌슦, bufCount瑜� 怨꾩궛�븯�뿬 whitespaceInterval�쓣 援ы븿
 		boolean isSet = false;
 		int bufCount = 0;
 		WhiteSpaceInterval:
@@ -192,25 +192,25 @@ public class ExonGraphGF extends ExonGraph implements Serializable{
 		boolean GeneStrand = true;
 		MakeExonGraph:
 			while(true){
-				// GTF 한 줄을 읽음
+				// GTF �븳 以꾩쓣 �씫�쓬
 				String line=BRGtf.readLine();
-				// line에 null일 경우는 파일의 끝임
-				// 해당 경우, 두 가지 가능성이 존재
-				// case1: 해당 염색체 정보가 한 줄이라도 처리된 경우 (gene변수는 null이 아님)
-				// 이 경우 마지막 유전자 정보를 처리해야함
+				// line�뿉 null�씪 寃쎌슦�뒗 �뙆�씪�쓽 �걹�엫
+				// �빐�떦 寃쎌슦, �몢 媛�吏� 媛��뒫�꽦�씠 議댁옱
+				// case1: �빐�떦 �뿼�깋泥� �젙蹂닿� �븳 以꾩씠�씪�룄 泥섎━�맂 寃쎌슦 (gene蹂��닔�뒗 null�씠 �븘�떂)
+				// �씠 寃쎌슦 留덉�留� �쑀�쟾�옄 �젙蹂대�� 泥섎━�빐�빞�븿
 				//
-				// case2: 해당 염색체 정보가 한 줄도 처리가 안된 경우 (gene변수는 null)
-				// 이 경우 유전자 정보가 전혀 없는 상태라서 처리할 것이 없음
+				// case2: �빐�떦 �뿼�깋泥� �젙蹂닿� �븳 以꾨룄 泥섎━媛� �븞�맂 寃쎌슦 (gene蹂��닔�뒗 null)
+				// �씠 寃쎌슦 �쑀�쟾�옄 �젙蹂닿� �쟾�� �뾾�뒗 �긽�깭�씪�꽌 泥섎━�븷 寃껋씠 �뾾�쓬
 				
-				// 본 if문에 들어갈 경우, 반드시 종료됨 
+				// 蹂� if臾몄뿉 �뱾�뼱媛� 寃쎌슦, 諛섎뱶�떆 醫낅즺�맖 
 				if(line == null){
 	
-					// case2 에 해당
+					// case2 �뿉 �빐�떦
 					if(gene == null){
 						break MakeExonGraph;
 					}
 					
-					// case1 에 해당
+					// case1 �뿉 �빐�떦
 					int gene_trans_cnt = gene.get_trans_cnt();
 					for(int i=0; i<gene_trans_cnt; i++){
 						gene.transcriptList.get(i).reverseExon();
@@ -244,66 +244,66 @@ public class ExonGraphGF extends ExonGraph implements Serializable{
 					break MakeExonGraph;
 				}
 				
-				// 이 경우로 넘어오면, line은 null이 아닌게 보장됨
+				// �씠 寃쎌슦濡� �꽆�뼱�삤硫�, line�� null�씠 �븘�땶寃� 蹂댁옣�맖
 	
 				//Meta info region
-				// Meta Info의 경우는 전처리할 정보가 없음 (ver 1.0.0 설계 기준)
+				// Meta Info�쓽 寃쎌슦�뒗 �쟾泥섎━�븷 �젙蹂닿� �뾾�쓬 (ver 1.0.0 �꽕怨� 湲곗�)
 				if(line.startsWith("#")){
 					continue;
 				}
 	
-				String[] lineSplit = line.split("\t");
+				String[] record = line.split("\t");
 					
-				// GTF의 항목은 총 9개로 구성
-				// 포맷에 맞지 않으면 해당 라인은 무시
+				// GTF�쓽 �빆紐⑹� 珥� 9媛쒕줈 援ъ꽦
+				// �룷留룹뿉 留욎� �븡�쑝硫� �빐�떦 �씪�씤�� 臾댁떆
 				
-				if(lineSplit.length != 9){
+				if(record.length != 9){
 					Logger.getLogger("ExonGraphGF").log(Level.WARNING, "There is a missing value caused by wrong GTF format.");
 					continue;
 				}
 				
 				
-				// 현재 다루는 염색체 정보만 걸러냄
+				// �쁽�옱 �떎猷⑤뒗 �뿼�깋泥� �젙蹂대쭔 嫄몃윭�깂
 				// ex>
-				// 염색체 1번만 다룬다면, 1번에 대한 GTF 라인만 연산
+				// �뿼�깋泥� 1踰덈쭔 �떎猷щ떎硫�, 1踰덉뿉 ���븳 GTF �씪�씤留� �뿰�궛
 				
-				if( !lineSplit[0].equalsIgnoreCase(CHR_IDENTIFIER)){ continue; }
+				if( !record[0].equalsIgnoreCase(CHR_IDENTIFIER)){ continue; }
 	
 				
-				// 타입이 exon일 경우
-				String feature = lineSplit[2];
+				// ���엯�씠 exon�씪 寃쎌슦
+				String feature = record[2];
 				if(feature.equalsIgnoreCase("exon") || feature.equalsIgnoreCase("CDS")){
-					String[] attr = lineSplit[8].split(";");
+					String[] attr = record[8].split(";");
 					
-					// 세 가지 경우가 있음
-					// case1: 현재 exon이 가장 처음 exon인 경우
-					// gene과 trans를 초기화 하고, exon을 추가함
+					// �꽭 媛�吏� 寃쎌슦媛� �엳�쓬
+					// case1: �쁽�옱 exon�씠 媛��옣 泥섏쓬 exon�씤 寃쎌슦
+					// gene怨� trans瑜� 珥덇린�솕 �븯怨�, exon�쓣 異붽��븿
 					//
-					// case2: 현재 exon의 TI가 이전 exon의 TI와 다른 경우
-					// 	case2-1: 현재 gene이 이전 gene과 다를 경우
-					//	이전 gene을 genes에 추가하고, case1과 같은 루틴을 수행함
+					// case2: �쁽�옱 exon�쓽 TI媛� �씠�쟾 exon�쓽 TI�� �떎瑜� 寃쎌슦
+					// 	case2-1: �쁽�옱 gene�씠 �씠�쟾 gene怨� �떎瑜� 寃쎌슦
+					//	�씠�쟾 gene�쓣 genes�뿉 異붽��븯怨�, case1怨� 媛숈� 猷⑦떞�쓣 �닔�뻾�븿
 					//
-					//	case2-2: 현재 gene이 이전 gene과 같을 경우
-					//	이전 gene에 새로운 트랜스크립트를 추가하고, exon을 추가함
+					//	case2-2: �쁽�옱 gene�씠 �씠�쟾 gene怨� 媛숈쓣 寃쎌슦
+					//	�씠�쟾 gene�뿉 �깉濡쒖슫 �듃�옖�뒪�겕由쏀듃瑜� 異붽��븯怨�, exon�쓣 異붽��븿
 					//
-					// case3: 현재 exon의 TI가 이전 exon의 TI와 동일한 경우
-					// 이전 gene과 이전 trans에 exon을 추가함
+					// case3: �쁽�옱 exon�쓽 TI媛� �씠�쟾 exon�쓽 TI�� �룞�씪�븳 寃쎌슦
+					// �씠�쟾 gene怨� �씠�쟾 trans�뿉 exon�쓣 異붽��븿
 					
-					// case3의 경우
+					// case3�쓽 寃쎌슦
 					if(transcript_id != null && (transcript_id.equalsIgnoreCase(ExonUtils.getGtfAttr(attr,"transcript_id")))){
 					
-						gene.transcriptList.get(gene.get_trans_cnt() - 1).addExon(lineSplit, GeneStrand);
+						gene.transcriptList.get(gene.get_trans_cnt() - 1).addExon(record, GeneStrand);
 					}
-					// case1, 2의 경우
-					// case1과 2를 묶은 이유는 case1과 case2가 gene과 trans를 초기화하는 루틴이 중복되기 때문임
+					// case1, 2�쓽 寃쎌슦
+					// case1怨� 2瑜� 臾띠� �씠�쑀�뒗 case1怨� case2媛� gene怨� trans瑜� 珥덇린�솕�븯�뒗 猷⑦떞�씠 以묐났�릺湲� �븣臾몄엫
 					else{
 						
 						//Different Transcripts
 						
 						transcript_id = ExonUtils.getGtfAttr(attr, "transcript_id");
 						
-						// TI는 exon구분에 있어서 반드시 필요한 요소임
-						// TI에 대해서 missing value가 발생하면, 무시
+						// TI�뒗 exon援щ텇�뿉 �엳�뼱�꽌 諛섎뱶�떆 �븘�슂�븳 �슂�냼�엫
+						// TI�뿉 ���빐�꽌 missing value媛� 諛쒖깮�븯硫�, 臾댁떆
 						if(transcript_id == null){
 							continue;
 						}
@@ -314,7 +314,7 @@ public class ExonGraphGF extends ExonGraph implements Serializable{
 						
 						//Gene ID
 						String GeneID = ExonUtils.getGtfAttr(attr, "gene_id");
-						//case2-1에 해당
+						//case2-1�뿉 �빐�떦
 						if(gene != null
 								&& !prevGeneID.equalsIgnoreCase(GeneID)){
 
@@ -355,14 +355,14 @@ public class ExonGraphGF extends ExonGraph implements Serializable{
 							addIntron(genes.get(genes.size()-1));
 						}
 						//Strand
-						if(lineSplit[6].equalsIgnoreCase("-")){
+						if(record[6].equalsIgnoreCase("-")){
 							GeneStrand = false;
 						}else{
 							GeneStrand = true;
 						}
 						
-						// case1과 case2-1에 해당
-						// gene과 trans를 초기화
+						// case1怨� case2-1�뿉 �빐�떦
+						// gene怨� trans瑜� 珥덇린�솕
 						if(prevGeneID == null){
 							gene = new GENE(GeneID, trans_cnt, GeneStrand);
 							
@@ -372,45 +372,45 @@ public class ExonGraphGF extends ExonGraph implements Serializable{
 							genes.add(gene);
 						}
 						
-						// case2-2에 해당
+						// case2-2�뿉 �빐�떦
 						if(prevGeneID != null && prevGeneID.equalsIgnoreCase(GeneID)){
 							gene.incre_trans_cnt();
 						}
 						prevGeneID = GeneID;
 						
-						// exon의 시작과 끝을 만듦
+						// exon�쓽 �떆�옉怨� �걹�쓣 留뚮벀
 						exon =  new EXON(null, null, null, -1, -1, 0, gene.get_trans_cnt());
 						exon.set_next_junc(gene.get_trans_cnt()-1, 0, new EXON(null, null, null, Integer.MAX_VALUE-1, Integer.MAX_VALUE-1, 0, gene.get_trans_cnt()));
 						exon.get_next(gene.get_trans_cnt()-1, 0).set_prev_junc(gene.get_trans_cnt()-1, 0, exon);
 						prevExon_ = exon;
 												
 						gene.transcriptList.add(new Transcript());
-						gene.transcriptList.get(gene.get_trans_cnt() - 1).addExon(lineSplit, GeneStrand);
+						gene.transcriptList.get(gene.get_trans_cnt() - 1).addExon(record, GeneStrand);
 						trans.add(exon);
 					}
 					
-					// CDS인 경우에는 CDS정보를 exon에 저장하지 않음.
+					// CDS�씤 寃쎌슦�뿉�뒗 CDS�젙蹂대�� exon�뿉 ���옣�븯吏� �븡�쓬.
 					if(feature.equalsIgnoreCase("CDS")){
 						continue;
 					}
 					
-					// exon의 시작과 끝의 genome position
-					int start =  Integer.parseInt(lineSplit[3]);
-					int end =  Integer.parseInt(lineSplit[4]);
+					// exon�쓽 �떆�옉怨� �걹�쓽 genome position
+					int start =  Integer.parseInt(record[3]);
+					int end =  Integer.parseInt(record[4]);
 					
-					// start보다 end가 크거나 같아야 함
-					// 이 사항이 보장되어야 addmutation과 같은 연산을 수행할 때, 올바르게 작동함
-					// dirty data의 한 종류임
+					// start蹂대떎 end媛� �겕嫄곕굹 媛숈븘�빞 �븿
+					// �씠 �궗�빆�씠 蹂댁옣�릺�뼱�빞 addmutation怨� 媛숈� �뿰�궛�쓣 �닔�뻾�븷 �븣, �삱諛붾Ⅴ寃� �옉�룞�븿
+					// dirty data�쓽 �븳 醫낅쪟�엫
 					if(start > end){
 						int temp = start;
 						start = end;
 						end = temp;
 					}
 					
-					// Fasta에서 exon의 문자열을 읽음
+					// Fasta�뿉�꽌 exon�쓽 臾몄옄�뿴�쓣 �씫�쓬
 					String[] head_seq_tail = getFastaString(start, end, gene.get_strand());
 					
-					// exon 생성
+					// exon �깮�꽦
 					exon = new EXON(head_seq_tail[1], head_seq_tail[0], head_seq_tail[2], start, end, 0, gene.get_trans_cnt());
 					
 					exon.isExon = true;
@@ -422,11 +422,11 @@ public class ExonGraphGF extends ExonGraph implements Serializable{
 						direction = true;
 					}
 					
-					// start를 기준으로 오름차순 정렬이 되어야 함
-					// direction이 true인 경우는 prevExon_ 다음에 현재 exon을 연결하면 됨
-					// direction이 false인 경우는 prevExon_ 이전에 현재 exon을 연결하면 됨
+					// start瑜� 湲곗��쑝濡� �삤由꾩감�닚 �젙�젹�씠 �릺�뼱�빞 �븿
+					// direction�씠 true�씤 寃쎌슦�뒗 prevExon_ �떎�쓬�뿉 �쁽�옱 exon�쓣 �뿰寃고븯硫� �맖
+					// direction�씠 false�씤 寃쎌슦�뒗 prevExon_ �씠�쟾�뿉 �쁽�옱 exon�쓣 �뿰寃고븯硫� �맖
 					
-					// direction이 true이면 항상 이 루틴으로 연결
+					// direction�씠 true�씠硫� �빆�긽 �씠 猷⑦떞�쑝濡� �뿰寃�
 					if(direction || prevExon_.get_seq() == null){
 						exon.set_prev_junc(gene.get_trans_cnt()-1, 0, prevExon_);
 						exon.set_next_junc(gene.get_trans_cnt()-1, 0, prevExon_.get_next(gene.get_trans_cnt()-1, 0));
@@ -434,8 +434,8 @@ public class ExonGraphGF extends ExonGraph implements Serializable{
 						prevExon_.set_next_junc(gene.get_trans_cnt()-1, 0, exon);
 	
 					}
-					// direction이 false이면 초기 연결을 제외하고 항상 이 루틴으로 연결
-					// 초기 연결은 두 경우 동일하기 때문임
+					// direction�씠 false�씠硫� 珥덇린 �뿰寃곗쓣 �젣�쇅�븯怨� �빆�긽 �씠 猷⑦떞�쑝濡� �뿰寃�
+					// 珥덇린 �뿰寃곗� �몢 寃쎌슦 �룞�씪�븯湲� �븣臾몄엫
 					else if(prevExon_.get_seq() != null){
 	
 						exon.set_next_junc(gene.get_trans_cnt()-1, 0, prevExon_);
@@ -450,13 +450,13 @@ public class ExonGraphGF extends ExonGraph implements Serializable{
 				}
 			}
 		
-		// 파일 닫기
+		// �뙆�씪 �떕湲�
 		
 		BRGtf.close();
 		FRGtf.close();
 		RAFFasta.close();
 		
-		//Chromosome 생성
+		//Chromosome �깮�꽦
 		if(!CHR_IDENTIFIER.startsWith("chr")){
 			CHR_IDENTIFIER = "chr"+CHR_IDENTIFIER;
 		}
@@ -503,12 +503,12 @@ public class ExonGraphGF extends ExonGraph implements Serializable{
 		int trans_cnt = gene.get_trans_cnt();
 		
 		if(ERTList.size()!=0){
-			// Intron Hash를 만듦
+			// Intron Hash瑜� 留뚮벀
 			for(ExonRangeType ERT : ERTList){
-				// Fasta에서 exon의 문자열을 읽음
+				// Fasta�뿉�꽌 exon�쓽 臾몄옄�뿴�쓣 �씫�쓬
 				String[] head_seq_tail = getFastaString(ERT.start, ERT.end, gene.get_strand());
 				
-				// exon 생성
+				// exon �깮�꽦
 				EXON exon = new EXON(head_seq_tail[1], null, null, ERT.start, ERT.end, 0, gene.get_trans_cnt());
 				exon.isExon = false;
 				

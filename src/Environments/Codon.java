@@ -1,8 +1,6 @@
-package ExonGraph;
+package Environments;
 
 import java.util.HashMap;
-
-import Environments.Constants;
 
 public class Codon {
 	static HashMap<String, Character> NuclToAmino;

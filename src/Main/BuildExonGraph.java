@@ -1,20 +1,21 @@
 package Main;
 
-import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
+import java.util.ArrayList;
 
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
 
+import Environments.Codon;
 import Environments.Constants;
-import ExonGraph.ExonGraphGF;
 import Thread.ExonGraphGFT;
+import data.GTF;
+import data.KeywordTree;
+import data.Pattern;
 
 public class BuildExonGraph {
 	
@@ -27,7 +28,6 @@ public class BuildExonGraph {
 	 * @throws InterruptedException 
 	 */
 	public static void main(String[] args) throws IOException, InterruptedException {
-		
 		if(args.length != 1){
 			System.exit(-1);
 		}
@@ -40,16 +40,9 @@ public class BuildExonGraph {
 			// TODO Auto-generated catch block
 			Environments.Error.exitError(Environments.Error.PARAM_ERROR, "XML_PARSER_ERROR");
 		}
-		
 		long startTime= System.currentTimeMillis();
-		// fasta가 들어있는 폴더
-		
-		// LargeScale Deletion
 
 		File[] fastaFileList = new File(Constants.REFERENCE_GENOME_PATH).listFiles();
-		// gtf가 들어있는 폴더
-		// LargeScale Deletion
-
 		File[] gtfFileListCheck = new File(Constants.GTF_PATH).listFiles();
 		File[] gtfFileList = new File[gtfFileListCheck.length];
 		
@@ -78,103 +71,37 @@ public class BuildExonGraph {
 			gtfFileList[0] = gtfFileListCheck[0];
 		}
 		
-		//!! fasta 파일 이름(확장자제외)과 gtf에 적혀있는 chrName을 동일하게 할 것
-		//   ex> 1.fa 이면  gtf 파일안에 적혀있는 chrName은 1
-		//       X.fa 이면 gtf 파일안에 적혀있는 chrName은 X
-				
-		ExonGraphGF.CHR_NUM = fastaFileList.length;
-		TheNumberOfTasks = fastaFileList.length;
-		ExonGraphGF EG = null;
 		
-		ExonGraphGFT[] exonGraphGFTList = new ExonGraphGFT[Constants.THE_NUMBER_OF_THREADS-1];
-		if(gtfFileList.length == fastaFileList.length){
-			// GTF 파일 수와 Fasta 파일 수가 같을 경우
-			// 즉, 1.fa  -- 1.gtf
-			//    2.fa  -- 2.gtf
-			//    ....
-			//    10.fa  -- 10.gtf
-			if(fastaFileList.length == 1){
-				EG = new ExonGraphGF(gtfFileList[0], fastaFileList[0], -1);
-				ExonGraphGFT.TheNumberOfSuccess++;
-				System.out.println(fastaFileList[0].getName()+" is done");
-			}
-			
-			for(int fIndex=0; fIndex < fastaFileList.length-1; fIndex++){
-				if(fIndex == 0){
-					EG = new ExonGraphGF(gtfFileList[fastaFileList.length-1], fastaFileList[fastaFileList.length-1], -1);
-					ExonGraphGFT.TheNumberOfSuccess++;
-					System.out.println(fastaFileList[fastaFileList.length-1].getName()+" is done");
-				}
-				
-				if(Thread.activeCount() != Constants.THE_NUMBER_OF_THREADS){
-					
-					for(int i=0; i<Constants.THE_NUMBER_OF_THREADS-1; i++){
-						if(exonGraphGFTList[i] == null || exonGraphGFTList[i].isDone){
-							exonGraphGFTList[i] = new ExonGraphGFT(EG, gtfFileList[fIndex], fastaFileList[fIndex], -1);
-							exonGraphGFTList[i].start();
-							break;
-						}
-					}
-					
-				}else{
-					EG = new ExonGraphGF(gtfFileList[fIndex], fastaFileList[fIndex], -1);
-					ExonGraphGFT.TheNumberOfSuccess++;
-					System.out.println(fastaFileList[fIndex].getName()+" is done");
-				}
-				
-			}
-		}else if(gtfFileList.length == 1){
-			// 하나의 GTF 파일
-			for(int fIndex=0; fIndex < fastaFileList.length-1; fIndex++){
-				if(fIndex == 0){
-					EG = new ExonGraphGF(gtfFileList[0], fastaFileList[fastaFileList.length-1], -1);
-					ExonGraphGFT.TheNumberOfSuccess++;
-					System.out.println(fastaFileList[fastaFileList.length-1].getName()+" is done");
-				}
-				
-				if(Thread.activeCount() != Constants.THE_NUMBER_OF_THREADS){
-					
-					for(int i=0; i<Constants.THE_NUMBER_OF_THREADS-1; i++){
-						if(exonGraphGFTList[i] == null || exonGraphGFTList[i].isDone){
-							exonGraphGFTList[i] = new ExonGraphGFT(EG, gtfFileList[0], fastaFileList[fIndex], -1);
-							exonGraphGFTList[i].start();
-							break;
-						}
-					}
-					
-				}else{
-					EG = new ExonGraphGF(gtfFileList[0], fastaFileList[fIndex], -1);
-					ExonGraphGFT.TheNumberOfSuccess++;
-					System.out.println(fastaFileList[fIndex].getName()+" is done");
-				}
-			}
+		// load gtf
+		
+		// build keyword tree
+		ArrayList<Pattern> patterns = loadPatterns("C:\\Users\\progi\\Desktop\\Projects\\ACTG\\test.txt");
+		KeywordTree ktree = new KeywordTree(patterns);
+		Codon.Mapping();
+		for(File file : gtfFileList) {
+			GTF gtf = new GTF(file);
+			gtf.setSequence(fastaFileList);
+			gtf.find(ktree);
 		}
 		
-		
-		for(int i=0; i<exonGraphGFTList.length; i++){
-			if(exonGraphGFTList[i] != null){
-				if(exonGraphGFTList[i].getState() != Thread.State.TERMINATED){
-					exonGraphGFTList[i].join();
-				}
-			}
-			
-		}
-
-		createGraphFile(EG, Constants.GRAPH_OUTPUT_PATH);
 		System.out.println("Construction Time for Exon Graph : " + (System.currentTimeMillis()-startTime)/1000 + " Sec" );
 
 	
 	}
 	
-	public static void createGraphFile(ExonGraphGF EG, String fileName) throws IOException{
-		OutputStream outFile = new FileOutputStream(fileName);
-		OutputStream buffer = new BufferedOutputStream(outFile);
-		ObjectOutput output = new ObjectOutputStream(buffer);
+	public static ArrayList<Pattern> loadPatterns (String fileName) throws IOException {
+		ArrayList<Pattern> patterns = new ArrayList<Pattern>();
+		BufferedReader BR = new BufferedReader(new FileReader(fileName));
+		String line = null;
 		
-		output.writeObject(EG.getChromosome());
-		output.close();
-		outFile.close();
+		while((line = BR.readLine()) != null) {
+			Pattern pattern = new Pattern();
+			pattern.aaSequence = line;
+			patterns.add(pattern);
+		}
+		BR.close();
 		
+		return patterns;
 	}
 	
 }

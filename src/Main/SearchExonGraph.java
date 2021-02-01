@@ -10,8 +10,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;
+
+import Environments.Codon;
 import Environments.Constants;
-import ExonGraph.Codon;
 import ExonGraph.ExonGraph;
 import ExonGraph.ExonGraphGF;
 import ExonGraph.Flat;
