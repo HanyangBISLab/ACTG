@@ -98,7 +98,7 @@ public class GTF {
 				if(type.equalsIgnoreCase("cds")) region.regionClass = Region.CDS;
 				
 				Transcript transcript = regionMap.get(key);
-				if(transcript == null) transcript = new Transcript(transcriptID, geneID, geneName, transcriptType, strand);
+				if(transcript == null) transcript = new Transcript(chr, transcriptID, geneID, geneName, transcriptType, strand);
 				transcript.regions.add(region);
 				regionMap.put(key, transcript);
 			}

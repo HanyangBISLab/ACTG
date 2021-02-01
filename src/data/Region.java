@@ -1,7 +1,6 @@
 package data;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 
 public class Region implements Comparable<Region> {
 	
@@ -16,8 +15,17 @@ public class Region implements Comparable<Region> {
 	public int start = 0;
 	public int end = 0;
 	
-	public Hashtable<Integer, ArrayList<Variant>> variants = new Hashtable<Integer, ArrayList<Variant>>();
 	public StringBuilder nucleotides = null;
+	public Region nextNormal = null;
+	public Region prevNormal = null;
+	
+	public Region nextExonSkipping = null;
+	public Region prevExonSkipping = null;
+	
+	public ArrayList<Region> nextVars = new ArrayList<Region>();
+	public ArrayList<Region> prevVars = new ArrayList<Region>();
+	
+	
 	
 	/**
 	 * [ start, end ]: both loci are inclusive.

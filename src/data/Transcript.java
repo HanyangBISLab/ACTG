@@ -2,6 +2,7 @@ package data;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 
 import Environments.Codon;
 
@@ -12,10 +13,11 @@ public class Transcript {
 	public String geneID = null;
 	public String geneName = null;
 	public String transcriptType = null;
+	public String chr = null;
 	public boolean strand = true;
 	
 	
-	public Transcript (String transcriptID, String geneID, String geneName, String transcriptType, boolean strand) {
+	public Transcript (String chr, String transcriptID, String geneID, String geneName, String transcriptType, boolean strand) {
 		this.regions = new ArrayList<Region>();
 		this.transcriptID = transcriptID;
 		this.geneID = geneID;
@@ -132,6 +134,56 @@ public class Transcript {
 		}
 		Collections.sort(newRegion);
 		this.regions = newRegion;
+		
+		// linear DAG
+		for(int i=0; i<this.regions.size()-1; i++) {
+			Region lRegion = this.regions.get(i);
+			Region rRegion = this.regions.get(i+1);
+			lRegion.nextNormal = rRegion;
+			rRegion.prevNormal = lRegion;
+		}
+	}
+	
+	public void setExonSkipping () {
+		for(int i=0; i<this.regions.size()-1; i++) {
+			Region lRegion = this.regions.get(i);
+			for(int j=i+1; j<this.regions.size(); j++) {
+				Region rRegion = this.regions.get(j);
+				// CDS and Noncoding only
+				if(lRegion.regionClass == Region.CDS && rRegion.regionClass == Region.CDS) {
+					lRegion.nextExonSkipping = rRegion;
+					rRegion.prevExonSkipping = lRegion;
+					break;
+				} else if(lRegion.regionClass == Region.NONCODING && rRegion.regionClass == Region.NONCODING) {
+					lRegion.nextExonSkipping = rRegion;
+					rRegion.prevExonSkipping = lRegion;
+					break;
+				}
+			}
+		}
+	}
+	
+	public void setVariants (Variants variants) {
+		
+		//TODO variants..!
+		for(int i=0; i<this.regions.size(); i++) {
+			Region region = this.regions.get(i);
+			// sorted variants
+			ArrayList<Variant> selectedVariants = variants.getVariants(chr, region.start, region.end);
+			
+			ArrayList<Region> varRegions = new ArrayList<Region>();
+			for(Variant variant : selectedVariants) {
+				if(region.start == variant.pos) {
+					
+				} else if(region.start < variant.pos && variant.pos < region.end) {
+					
+				} else if(region.end == variant.pos) {
+					
+				}
+			}
+			
+		}
+		
 	}
 	
 	public int find (KeywordTree keywordTree) {
@@ -140,7 +192,15 @@ public class Transcript {
 		StringBuilder nts = new StringBuilder();
 		
 		Node curNode = keywordTree.root;
+		LinkedList<Region> path = new LinkedList<Region>();
+		path.add(this.regions.get(0)); // stack
 		if(this.strand) {
+			// TODO!
+			while(!path.isEmpty()) {
+				Region region = path.pop();
+				
+			}
+			
 			for(int i=0; i<size; i++) {
 				Region region = this.regions.get(i);
 				if(region.regionClass == Region.CDS) {
@@ -162,7 +222,7 @@ public class Transcript {
 							if(curNode.outputs.size() != 0) {
 								System.out.println("FIND-");
 								for(int patternIndex : curNode.outputs) {
-									System.out.println(keywordTree.patterns.get(patternIndex).aaSequence);
+									System.out.println(keywordTree.patterns.get(patternIndex).aaSequence +"\t" +this.transcriptID+"\t"+this.geneID+"\t"+this.transcriptType);
 								}
 							}
 							
