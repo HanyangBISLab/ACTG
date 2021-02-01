@@ -1009,6 +1009,11 @@ public class GENE implements Serializable {
 					// reverse-complementary
 					int index = len - ntLength;
 					for(; index<len; index++) {
+						sequence.append(this.nucleotides.charAt(index));
+					}
+					sequence = sequence.reverse();
+					/*
+					for(; index<len; index++) {
 						switch(this.nucleotides.charAt(index)) {
 						case 'A': sequence.append('T'); break;
 						case 'C': sequence.append('G'); break;
@@ -1016,8 +1021,7 @@ public class GENE implements Serializable {
 						case 'G': sequence.append('C'); break;
 						default : sequence.append('N'); break;
 						}
-						sequence = sequence.reverse();
-					}
+					}*/
 				}
 				
 				for(int j=exonList.size()-1; j>=0; j--){

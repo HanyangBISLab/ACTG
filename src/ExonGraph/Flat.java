@@ -126,7 +126,6 @@ public class Flat {
 		}else{
 			resultKey = new StringBuilder(normalText.toString());
 		}
-			
 		
 		// chr湲곗엯
 		results.chr = GFF.temporaryGFF.get(0).split("\t")[0];
@@ -138,7 +137,6 @@ public class Flat {
 			}else{
 				resultKey.append(gff);
 			}
-			
 			
 		}
 		if(ResultMapping.ResultTable.get(resultKey.toString()) == null){
@@ -509,11 +507,9 @@ public class Flat {
 				cdsInfo = "FS";
 			}
 		}else{
-			
 			if(theCurrMappingType != UTR_3 && theCurrMappingType != UTR_5){
 				return "";
 			}
-			
 		}
 		
 		return cdsInfo;
