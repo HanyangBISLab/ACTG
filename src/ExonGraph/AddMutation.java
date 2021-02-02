@@ -28,36 +28,39 @@ class MutationStructure{
 	//mutation == 0	->	SNP
 	int pos, mutation;
 	
-	// origin : 기존 문자열
-	// substitution : 뮤테이션 문자열
+	// origin : 湲곗〈 臾몄옄�뿴
+	// substitution : 裕ㅽ뀒�씠�뀡 臾몄옄�뿴
 	String origin, substitution;
 	
+	public String toString() {
+		return pos+"_"+origin+">"+substitution;
+	}
 }
 
 class LargeScaleDeletion extends MutationStructure {
 	EXON startE = null;
 	
-	// Large Deletion의 실제 시작과 끝
+	// Large Deletion�쓽 �떎�젣 �떆�옉怨� �걹
 	int endPos;
 	
 }
 
-// Exon이 걸쳐있는 범위 정보를 갖고 있는 클래스
+// Exon�씠 嫄몄퀜�엳�뒗 踰붿쐞 �젙蹂대�� 媛뽮퀬 �엳�뒗 �겢�옒�뒪
 class ExonRange implements Serializable{
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -5861622815037956658L;
-	// start : exon 내에서 시작 위치
-	// end : exon 내에서 끝 위치
-	// mut : true == 뮤테이션, false == 노말
+	// start : exon �궡�뿉�꽌 �떆�옉 �쐞移�
+	// end : exon �궡�뿉�꽌 �걹 �쐞移�
+	// mut : true == 裕ㅽ뀒�씠�뀡, false == �끂留�
 	int start;
 	int end;
 	boolean isMut;
 }
 
-// Exon의 연결 상태를 갖고 있는 클래스
+// Exon�쓽 �뿰寃� �긽�깭瑜� 媛뽮퀬 �엳�뒗 �겢�옒�뒪
 class ExonStructure {
 	//
 	EXON exon;
@@ -71,8 +74,8 @@ class ExonStructure {
 
 public class AddMutation {
 	
-	// RefSeq Homo_sapiens.GRCh37.71.gtf & Ensembl GTF 기준 
-	// 엑손 평균 길이는 252개
+	// RefSeq Homo_sapiens.GRCh37.71.gtf & Ensembl GTF 湲곗� 
+	// �뿊�넀 �룊洹� 湲몄씠�뒗 252媛�
 	private int BIN_SIZE = 252;
 	public static final int MUT_TYPE_NUM = 3;
 	public static final int MEDIAN = 7;
@@ -81,7 +84,7 @@ public class AddMutation {
 	private Hashtable<Integer, ArrayList<LargeScaleDeletion>> LargeScaleDeletionHash = new Hashtable<Integer, ArrayList<LargeScaleDeletion>>();
 	private int curTransCount = 0;
 	
-	// LargeScaleDeletion 처리관련 변수
+	// LargeScaleDeletion 泥섎━愿��젴 蹂��닔
 	
 	// Path way 
 	private String VCFs[] = null;
@@ -93,7 +96,7 @@ public class AddMutation {
 	private int trans_cnt = 0;
 	
 	/**
-	 * VCFs folder를 입력
+	 * VCFs folder瑜� �엯�젰
 	 * 
 	 * @param CHR_IDENTIFIER
 	 * @param VCFPATH
@@ -117,14 +120,14 @@ public class AddMutation {
 		
 		this.CHR_IDENTIFIER = CHR_IDENTIFIER;
 		
-		// 해당 염색체의 뮤테이션 구조를 만듦
+		// �빐�떦 �뿼�깋泥댁쓽 裕ㅽ뀒�씠�뀡 援ъ“瑜� 留뚮벀
 		
 		ConstructMutationStructure();
 	}
 	
 	
 	/**
-	 * VCF 파일의 뮤테이션 정보를 읽고 자료구조를 만듦
+	 * VCF �뙆�씪�쓽 裕ㅽ뀒�씠�뀡 �젙蹂대�� �씫怨� �옄猷뚭뎄議곕�� 留뚮벀
 	 * 
 	 */
 	private void ConstructMutationStructure() throws IOException{
@@ -137,11 +140,12 @@ public class AddMutation {
 			BufferedReader BR = new BufferedReader(FR);
 			String line;
 			
-			// VCF 파일을 읽고 구조를 만드는 루틴
+			// VCF �뙆�씪�쓣 �씫怨� 援ъ“瑜� 留뚮뱶�뒗 猷⑦떞
 			while((line = BR.readLine()) != null){
+				if(line.startsWith("#")) continue;
 				String[] lineSplit = null;
 				
-				// VCF 레코드는 항목이 10개 이상임
+				// VCF �젅肄붾뱶�뒗 �빆紐⑹씠 10媛� �씠�긽�엫
 				lineSplit = line.split("\t");
 				if(lineSplit.length < 10){
 					Logger.getLogger("AddMutation").log(Level.WARNING, "There is a missing value caused by wrong VCF format.");
@@ -150,7 +154,7 @@ public class AddMutation {
 				}
 				
 				
-				// 두 염색체 번호가 다르면 넘어감
+				// �몢 �뿼�깋泥� 踰덊샇媛� �떎瑜대㈃ �꽆�뼱媛�
 				if(!lineSplit[0].equalsIgnoreCase(CHR_IDENTIFIER)){
 					continue;
 				}
@@ -178,7 +182,7 @@ public class AddMutation {
 				}
 				
 				
-				// Mutation 종류를 결정
+				// Mutation 醫낅쪟瑜� 寃곗젙
 				
 				//SNP
 				if(MS.origin.length() == MS.substitution.length()){
@@ -215,7 +219,7 @@ public class AddMutation {
 			FR.close();
 		}
 		
-		// 정렬
+		// �젙�젹
 		if(MSHash.size() == 0) return;
 		Iterator<Integer> keys = (Iterator)MSHash.keys();
 		
@@ -225,7 +229,7 @@ public class AddMutation {
 			
 			Collections.sort(MSList, new MSComparator());
 			
-			// 중복 제거
+			// 以묐났 �젣嫄�
 			int pivot = 0;
 			for(int i=1; i<MSList.size(); i++){
 				if(MSList.get(i).pos == MSList.get(pivot).pos &&
@@ -260,7 +264,7 @@ public class AddMutation {
 			trans_cnt = gene.get_trans_cnt();
 			curTransCount = i;
 			
-			// Large Scale Deletion이 발견되면 isLargeSacleDeletion = true 임
+			// Large Scale Deletion�씠 諛쒓껄�릺硫� isLargeSacleDeletion = true �엫
 			addToExon(gene.get_trans().get(i));
 			
 		}
@@ -272,7 +276,7 @@ public class AddMutation {
 		}
 		exon.set_check(visit);
 		
-		// Transcript의 끝
+		// Transcript�쓽 �걹
 		if(exon.get_end() == Integer.MAX_VALUE-1){
 			return;
 		}
@@ -296,7 +300,7 @@ public class AddMutation {
 			
 		}
 
-		// exon이 바뀌지 않음
+		// exon�씠 諛붾�뚯� �븡�쓬
 		//ArrayList<ExonStructure> nexts = getNextExon(exon);
 		
 		for(ExonStructure es : nextExon){
@@ -317,10 +321,11 @@ public class AddMutation {
 					if(ms.pos >= start && ms.pos <= end){
 						
 						if(ms.pos + ms.origin.length() - 1 > end){
-							// Large Scale Deletion일 경우 제외
-							// HandleLargeScaleDeletion 메소드에서 따로 처리함
+							// Large Scale Deletion�씪 寃쎌슦 �젣�쇅
+							// HandleLargeScaleDeletion 硫붿냼�뱶�뿉�꽌 �뵲濡� 泥섎━�븿
 							// TODO: LargeScaleDeletion
 							System.out.println("TODO: LargeScaleDeletion");
+							System.out.println(ms.toString());
 							/*System.out.println(ms.pos);*/
 						}else{
 							MS.add(ms);
@@ -356,7 +361,7 @@ public class AddMutation {
 				NorOrMut:
 					while(true){
 						
-						// 뮤테이션일 경우
+						// 裕ㅽ뀒�씠�뀡�씪 寃쎌슦
 						if(norStart == mutStart){
 							
 							exonRange.add(getExonRange(mutStart, mutEnd, true));
@@ -367,12 +372,12 @@ public class AddMutation {
 							
 							break NorOrMut;
 						}
-						// 노말일 경우
+						// �끂留먯씪 寃쎌슦
 						else{
 							
 							exonRange.add(getExonRange(norStart, mutStart-1, false));
-							// 이 경우 반드시 norStart == mutStart를 만족함
-							// 따라서 다음 루프에서는 상위 if문에 해당되어 루프가 종료됨							
+							// �씠 寃쎌슦 諛섎뱶�떆 norStart == mutStart瑜� 留뚯”�븿
+							// �뵲�씪�꽌 �떎�쓬 猷⑦봽�뿉�꽌�뒗 �긽�쐞 if臾몄뿉 �빐�떦�릺�뼱 猷⑦봽媛� 醫낅즺�맖							
 							norStart = mutStart;
  
 						}
@@ -472,7 +477,7 @@ public class AddMutation {
 			EXON left = midzList.get(i-1);
 			EXON right = midzList.get(i);
 			
-			// 뮤테이션 연결은 transcript 0만 이용해서 연결함.
+			// 裕ㅽ뀒�씠�뀡 �뿰寃곗� transcript 0留� �씠�슜�빐�꽌 �뿰寃고븿.
 			left.set_next_junc(0, 0, right);
 			right.set_prev_junc(0, 0, left);
 			
@@ -516,19 +521,19 @@ public class AddMutation {
 			if(prevMsPos != ms.pos){
 				prevMsPos = ms.pos;
 				
-				// 뮤테이션 카운트 초기화
+				// 裕ㅽ뀒�씠�뀡 移댁슫�듃 珥덇린�솕
 				for(int i=0; i<MUT_TYPE_NUM; i++){
 					mutCount[i] = 0;
 				}
 			}
 			int mutType = ms.mutation + 1;
 			
-			// 동일 장소에서 종류별로 각 3개를 초과하여 적용될 수 없음
+			// �룞�씪 �옣�냼�뿉�꽌 醫낅쪟蹂꾨줈 媛� 3媛쒕�� 珥덇낵�븯�뿬 �쟻�슜�맆 �닔 �뾾�쓬
 			// ex>
-			// snp, snp, ins, ins 가능
-			// snp, snp, snp, snp 불가능 (snp가 3개를 초과)
-			// snp, snp, snp, ins, ins, ins, del, del, del 가능
-			// del, del, del, ins, del 불가능 (del이 3개를 초과)
+			// snp, snp, ins, ins 媛��뒫
+			// snp, snp, snp, snp 遺덇��뒫 (snp媛� 3媛쒕�� 珥덇낵)
+			// snp, snp, snp, ins, ins, ins, del, del, del 媛��뒫
+			// del, del, del, ins, del 遺덇��뒫 (del�씠 3媛쒕�� 珥덇낵)
 			if(mutCount[mutType] == 3){
 				continue;
 			}
@@ -621,6 +626,8 @@ class MSComparator implements Comparator<MutationStructure>{
 	 
     @Override
     public int compare(MutationStructure ms1, MutationStructure ms2) {
-        return ms1.pos > ms2.pos ? 1 : -1;
+    	if(ms1.pos > ms2.pos) return 1;
+    	else if(ms1.pos < ms2.pos) return -1;
+        return 0;
     }
 } 

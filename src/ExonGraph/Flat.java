@@ -16,7 +16,7 @@ public class Flat {
 
 	private static final int UTR_5 = 3;
 	private static final int UTR_3 = 2;
-	private static final int PSEUDO = -1;
+	private static final int NONCODING = -1;
 	private static final int CDS = 4;
 	private static final int FS = 1;
 	private static final int UNKNOWN = -2;
@@ -327,7 +327,7 @@ public class Flat {
 			// transcript: ACGTCG-ACGTGT-ACGGAT媛� �엳�떎怨� 媛��젙�븯硫�,
 			//                TCG-ACG   -ACG �� 媛숈� 諛⑹떇�쑝濡� 留듯븨�릺硫� �븞�맖
 			// 利�, �셿踰쏀븯寃� exon�뿉 留듯븨�릺�뼱�빞 �븿
-			if(score[transListIndex] != UNKNOWN){
+			/*if(score[transListIndex] != UNKNOWN){
 				for(int i=0; i<sizeOfExonList; i++){
 					if(i+1 < sizeOfExonList && matchingRegion[i*2 + 1] +1 < matchingRegion[i*2 +2]){
 						int prevEnd = matchingRegion[i*2 +1];
@@ -352,10 +352,10 @@ public class Flat {
 						}
 					}
 				}
-			}
+			}*/
 			
 			if(T.isPseudo() && score[transListIndex] != UNKNOWN){
-				score[transListIndex] = PSEUDO;
+				score[transListIndex] = NONCODING;
 			}
 			
 			transListIndex++;
@@ -383,7 +383,7 @@ public class Flat {
 			if(theBestMappingType == CDS || theBestMappingType == FS) break;
 			
 			// 紐⑤뜽�씠 �뾾�뒗 寃쎌슦�뒗 �젣�쇅
-			if(score[i] != UNKNOWN && score[i] != PSEUDO){
+			if(score[i] != UNKNOWN && score[i] != NONCODING){
 				
 				// 5`utr怨� 3`utr�쓽 寃쎌슦留� Log濡� 異쒕젰�븿
 				String mappingInfo = getRegionMappingType(transcriptList.get(i), score[i], matchingLength, matchingStart, matchingEnd, strand, false);
@@ -417,10 +417,9 @@ public class Flat {
 		ArrayList<ExonRangeType> exonz = transcript.exonList;
 		String cdsInfo = null;
 		theCurrMappingType = 0;
-		
-		if (score == PSEUDO) {
-			cdsInfo = "pseudo(chr" + (CHR.replace("chr", "")) + ")";
-			theCurrMappingType = PSEUDO;
+		if (score == NONCODING) {
+			cdsInfo = "noncoding(chr" + (CHR.replace("chr", "")) + ")";
+			theCurrMappingType = NONCODING;
 		}
 		// fully CDS!
 		else if(score == matchingLength){

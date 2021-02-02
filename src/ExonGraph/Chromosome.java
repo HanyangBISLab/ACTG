@@ -22,7 +22,6 @@ public class Chromosome implements Serializable {
 		for(int i=0; i<Gene_cnt; i++){
 			GeneArray[i] = genes.get(i);
 		}
-		
 	}
 	
 	public String get_name() { return name;}
